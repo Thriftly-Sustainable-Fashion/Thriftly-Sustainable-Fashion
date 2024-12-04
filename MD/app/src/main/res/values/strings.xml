@@ -98,6 +98,8 @@
     <string name="CD_search_button">Tombol yang digunakan untuk melakukan pencarian</string>
     <string name="title_shop">Toko</string>
     <string name="title_recomendation">Produk yang mungkin anda suka</string>
+    <string name="title_help_center">Help Center</string>
+    <string name="title_profile">profile</string>
 
     <string-array name="country_codes">
         <item>+62</item>

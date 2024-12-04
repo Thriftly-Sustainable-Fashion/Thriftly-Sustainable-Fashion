@@ -34,7 +34,6 @@ class ProfileFragment : Fragment() {
         val updateProfileCard: LinearLayout = view.findViewById(R.id.id_updateProfile)
         val logoutTextView: TextView = view.findViewById(R.id.logout)
 
-        // Tambahkan listener
         riwayatTransaksiCard.setOnClickListener {
             onRiwayatTransaksiClicked()
         }
@@ -56,7 +55,7 @@ class ProfileFragment : Fragment() {
         }
 
         updateProfileCard.setOnClickListener {
-            onUpdateProfileClicked() // Tambahkan listener untuk update profile
+            onUpdateProfileClicked()
         }
 
         logoutTextView.setOnClickListener {
