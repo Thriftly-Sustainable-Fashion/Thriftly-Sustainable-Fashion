@@ -1,13 +1,16 @@
-package com.example.thriftlyfashion.ui
+package com.example.thriftlyfashion.ui.homepage
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thriftlyfashion.Product
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.ui.search.SearchActivity
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexDirection
@@ -18,25 +21,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.shopRecyclerView)
+        val heroRecyclerView: RecyclerView = view.findViewById(R.id.heroRecyclerView)
+        val productRecyclerView: RecyclerView = view.findViewById(R.id.id_productList)
 
         val productImages = listOf(
-            R.drawable.baseline_shop_24,
-            R.drawable.baseline_shop_24,
-            R.drawable.baseline_shop_24,
-            R.drawable.baseline_shop_24,
-            R.drawable.baseline_shop_24
+            R.drawable.ic_shop,
+            R.drawable.ic_shop,
+            R.drawable.ic_shop,
+            R.drawable.ic_shop,
+            R.drawable.ic_shop
         )
-
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.layoutManager = layoutManager
-
-        val adapter = ShopListAdapter(requireContext(), productImages)
-        recyclerView.adapter = adapter
-
-        recyclerView.setHasFixedSize(true)
-
-        // Hero RecyclerView
-        val heroRecyclerView: RecyclerView = view.findViewById(R.id.heroRecyclerView)
 
         val heroImages = listOf(
             R.drawable.hero1,
@@ -45,11 +39,38 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             R.drawable.hero4
         )
 
+        val productList = listOf(
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 2", "Category 2", "Rp 750.000", "", "", "")
+        )
+
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = layoutManager
+
         val heroLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         heroRecyclerView.layoutManager = heroLayoutManager
 
+        val productLayoutManager = FlexboxLayoutManager(requireContext())
+        productLayoutManager.flexWrap = FlexWrap.WRAP
+        productLayoutManager.flexDirection = FlexDirection.ROW
+        productRecyclerView.layoutManager = productLayoutManager
+
+
+        val adapter = ShopListAdapter(requireContext(), productImages)
+        recyclerView.adapter = adapter
+
         val heroAdapter = HeroListAdapter(requireContext(), heroImages)
         heroRecyclerView.adapter = heroAdapter
+
+        val productAdapter = ProductListAdapter(requireContext(), productList)
+        productRecyclerView.adapter = productAdapter
+
+
+        recyclerView.setHasFixedSize(true)
 
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(heroRecyclerView)
@@ -77,24 +98,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
         })
 
+        val searchButton: LinearLayout = view.findViewById(R.id.id_search)
+        searchButton.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        }
 
-        val productLayoutManager = FlexboxLayoutManager(requireContext())
-        productLayoutManager.flexWrap = FlexWrap.WRAP
-        productLayoutManager.flexDirection = FlexDirection.ROW
-
-        val productRecyclerView: RecyclerView = view.findViewById(R.id.id_productList)
-        productRecyclerView.layoutManager = productLayoutManager
-
-        val productList = listOf(
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 2", "Category 2", "Rp 750.000")
-        )
-
-        val productAdapter = ProductListAdapter(requireContext(), productList)
-        productRecyclerView.adapter = productAdapter
     }
 }

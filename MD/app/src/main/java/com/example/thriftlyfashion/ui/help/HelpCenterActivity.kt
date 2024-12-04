@@ -1,4 +1,4 @@
-package com.example.thriftlyfashion.ui.profile.help
+package com.example.thriftlyfashion.ui.help
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

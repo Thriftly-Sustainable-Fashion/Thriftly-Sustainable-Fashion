@@ -1,60 +1,106 @@
 package com.example.thriftlyfashion.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.Fragment
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.ui.history.TransactionHistoryActivity
+import com.example.thriftlyfashion.ui.payment.AddPaymentMethodActivity
+import com.example.thriftlyfashion.ui.help.HelpCenterActivity
+import com.example.thriftlyfashion.ui.guide.UserGuideActivity
+import com.example.thriftlyfashion.ui.policy.PrivacyPolicyActivity
+import com.example.thriftlyfashion.ui.profile.ProfileEditActivity
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        val view = inflater.inflate(R.layout.fragment_profile, container, false)
+
+        val riwayatTransaksiCard: CardView = view.findViewById(R.id.id_riwayatTransaksi)
+        val addMethodPayCard: CardView = view.findViewById(R.id.id_addMethodPay)
+        val pusatBantuanCard: CardView = view.findViewById(R.id.id_pusatBantuan)
+        val panduanPenggunaCard: CardView = view.findViewById(R.id.id_panduanPengguna)
+        val kebijakanPrivasiCard: CardView = view.findViewById(R.id.id_kebijakanPrivasi)
+        val updateProfileCard: LinearLayout = view.findViewById(R.id.id_updateProfile)
+        val logoutTextView: TextView = view.findViewById(R.id.logout)
+
+        // Tambahkan listener
+        riwayatTransaksiCard.setOnClickListener {
+            onRiwayatTransaksiClicked()
+        }
+
+        addMethodPayCard.setOnClickListener {
+            onTambahMetodePembayaranClicked()
+        }
+
+        pusatBantuanCard.setOnClickListener {
+            onPusatBantuanClicked()
+        }
+
+        panduanPenggunaCard.setOnClickListener {
+            onPanduanPenggunaClicked()
+        }
+
+        kebijakanPrivasiCard.setOnClickListener {
+            onKebijakanPrivasiClicked()
+        }
+
+        updateProfileCard.setOnClickListener {
+            onUpdateProfileClicked() // Tambahkan listener untuk update profile
+        }
+
+        logoutTextView.setOnClickListener {
+            onLogoutClicked()
+        }
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProfileFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun onLogoutClicked() {
+        Toast.makeText(requireContext(), "Keluar dari aplikasi", Toast.LENGTH_SHORT).show()
+        // Navigasi ke halaman login
+//        val intent = Intent(requireContext(), LoginActivity::class.java)
+//        startActivity(intent)
+        activity?.finish() // Optional: Jika ingin menghapus fragment dari stack
+    }
+
+    private fun onRiwayatTransaksiClicked() {
+        val intent = Intent(requireContext(), TransactionHistoryActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onTambahMetodePembayaranClicked() {
+        val intent = Intent(requireContext(), AddPaymentMethodActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onPusatBantuanClicked() {
+        val intent = Intent(requireContext(), HelpCenterActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onPanduanPenggunaClicked() {
+        val intent = Intent(requireContext(), UserGuideActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onKebijakanPrivasiClicked() {
+        val intent = Intent(requireContext(), PrivacyPolicyActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onUpdateProfileClicked() {
+        val intent = Intent(requireContext(), ProfileEditActivity::class.java)
+        startActivity(intent)
     }
 }

@@ -1,6 +1,7 @@
-package com.example.thriftlyfashion.ui
+package com.example.thriftlyfashion.ui.homepage
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thriftlyfashion.Product
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.ui.product.ProductDetailActivity
 
 class ProductListAdapter(
     private val context: Context,
@@ -37,6 +39,16 @@ class ProductListAdapter(
         holder.productPrice.text = product.price
 
         holder.favoriteIcon.setColorFilter(context.getColor(R.color.white))
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, ProductDetailActivity::class.java).apply {
+                putExtra("PRODUCT_NAME", product.name)
+                putExtra("PRODUCT_CATEGORY", product.category)
+                putExtra("PRODUCT_PRICE", product.price)
+                putExtra("PRODUCT_IMAGE", product.image)
+            }
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = productList.size

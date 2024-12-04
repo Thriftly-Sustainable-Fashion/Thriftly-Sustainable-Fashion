@@ -1,4 +1,4 @@
-package com.example.thriftlyfashion.ui.profile.history
+package com.example.thriftlyfashion.ui.history
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

@@ -1,4 +1,4 @@
-package com.example.thriftlyfashion.ui
+package com.example.thriftlyfashion.ui.homepage
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -19,11 +19,11 @@ class HomepageActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.shopRecyclerView)
 
         val productImages = listOf(
-            R.drawable.baseline_shop_24,
-            R.drawable.baseline_shop_24,
-            R.drawable.baseline_shop_24,
-            R.drawable.baseline_shop_24,
-            R.drawable.baseline_shop_24
+            R.drawable.ic_shop,
+            R.drawable.ic_shop,
+            R.drawable.ic_shop,
+            R.drawable.ic_shop,
+            R.drawable.ic_shop
         )
 
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -58,12 +58,12 @@ class HomepageActivity : AppCompatActivity() {
         productRecyclerView.layoutManager = productLayoutManager
 
         val productList = listOf(
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000"),
-            Product(R.drawable.image, "Product 2", "Category 2", "Rp 750.000")
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
+            Product(R.drawable.image, "Product 2", "Category 2", "Rp 750.000", "", "", "")
         )
 
         val productAdapter = ProductListAdapter(this, productList)

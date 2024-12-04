@@ -1,4 +1,4 @@
-package com.example.thriftlyfashion.ui
+package com.example.thriftlyfashion.ui.homepage
 
 import android.content.Context
 import android.view.LayoutInflater
