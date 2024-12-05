@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:backgroundTint="@color/white"
+    android:orientation="vertical"
+    tools:context=".ui.guide.UserGuideActivity">
+
+    <LinearLayout
+        android:id="@+id/id_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:orientation="horizontal"
+        android:padding="20dp">
+
+        <ImageView
+            android:id="@+id/id_btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/primary" />
+
+        <TextView
+            android:id="@+id/id_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Panduan Pengguna"
+            android:textColor="@color/primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome to Thrifly"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The ultimate platform for buying and selling thrift store items! This guide will help you navigate the app, from creating an account to exploring features designed to promote sustainable fashion."
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="16dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Getting Started"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. Downloading the App"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Visit the Google Play Store (for Android) or Apple App Store (for iOS). Search for Thrifly and download the app. Install and open the app."
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2. Creating an Account"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tap on Sign Up. Fill in your details: Full Name, Email Address, Password. Agree to the Terms and Conditions and tap Create Account. Verify your email through the link sent to your inbox."
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? Tap Log In and enter your credentials."
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="16dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Main Features"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. Home Screen"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The home screen showcases: Recommended Items (based on your preferences), Trending Stores (discover popular thrift stores), and Search Bar (find specific items or categories)."
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2. Browsing Items"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filter options help narrow your search by size, color, category, price range, and condition. Sort items by relevance, price, or newest items. Tap on an item to view details such as Price, Size, Condition, and Seller’s Information."
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3. Purchasing an Item"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="4dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select an item, tap Buy Now, review your order, and choose a payment method (Credit/Debit Card, Digital Wallets, or Cash on Delivery). Finally, tap Confirm Purchase."
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="16dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Help and Support"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="If you encounter any issues, go to Settings > Help Center, contact support via Email Support or Live Chat, or check the FAQ section for quick answers."
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="16dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sustainability Goals"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="By using Thrifly, you contribute to reducing fashion waste, supporting local thrift store owners, and promoting eco-friendly fashion choices. Start exploring Thrifly today and make a difference while staying stylish!"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:paddingBottom="16dp"
+                android:textColor="@color/primary" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
