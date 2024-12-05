@@ -1,5 +1,17 @@
 package com.example.thriftlyfashion.ui
 
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.ui.login.LoginActivity
+import com.example.thriftlyfashion.ui.signup.SignupActivity
+
 class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +42,3 @@ class StartActivity : AppCompatActivity() {
     }
 
 }
-import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.thriftlyfashion.R
-

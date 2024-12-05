@@ -150,11 +150,10 @@
                     android:textColor="@color/primary" />
 
                 <ImageView
-                    android:id="@+id/imageView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:rotation="180"
-                    android:tint="@color/primary"
+                    app:tint="@color/primary"
                     app:srcCompat="@drawable/ic_arrow_back" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -172,7 +171,6 @@
                 android:padding="20dp">
 
                 <TextView
-                    android:id="@+id/textView13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -186,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:rotation="180"
-                    android:tint="@color/primary"
+                    app:tint="@color/primary"
                     app:srcCompat="@drawable/ic_arrow_back" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -204,7 +202,6 @@
                 android:padding="20dp">
 
                 <TextView
-                    android:id="@+id/textView13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -228,7 +225,6 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/textView14"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -238,7 +234,6 @@
                             android:textColor="@color/primary" />
 
                         <TextView
-                            android:id="@+id/textView15"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -248,7 +243,6 @@
                             android:textColor="@color/primary" />
 
                         <TextView
-                            android:id="@+id/textView16"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -285,7 +279,6 @@
                             android:textColor="@color/primary" />
 
                         <TextView
-                            android:id="@+id/textView16"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
