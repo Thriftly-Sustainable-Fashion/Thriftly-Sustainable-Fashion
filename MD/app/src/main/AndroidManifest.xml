@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
@@ -10,8 +9,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ThriftlyFashion"
-        tools:targetApi="31">
+        android:theme="@style/Theme.ThriftlyFashion">
+
+    <activity
+        android:name=".ui.main.SplashActivity"
+        android:theme="@style/Theme.ThriftlyFashion.Splash"
+        android:exported="true" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+
         <activity
             android:name=".ui.profile.ProfileDetailActivity"
             android:exported="false" />
@@ -48,13 +57,14 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="true" />
+        <activity
+            android:name=".ui.main.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.main.SignupActivity"
+            android:exported="true" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
