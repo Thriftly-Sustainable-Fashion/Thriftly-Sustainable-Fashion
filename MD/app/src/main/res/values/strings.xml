@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">ThriftlyFashion</string>
+  
     <string name="illustration_description">Ilustrasi aplikasi</string>
     <string name="background_image_description">Background illustration</string>
     <string name="hello_text">Hello</string>
@@ -26,7 +27,119 @@
     <string name="registration">Pendaftaran Berhasil!</string>
     <string name="message">Akun untuk telah berhasil dibuat.</string>
 
+    <string name="search">Search ...</string>
+    <string name="hero_image">hero image</string>
 
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Beranda">Home</string>
+    <string name="Cart">Keranjang</string>
+    <string name="todo">TODO</string>
+    <string name="alamat_penerima">Alamat Penerima</string>
+    <string name="nama_penerima">Nama Penerima</string>
+    <string name="provinsi_kabupaten">Provinsi - Kabupaten</string>
+    <string name="kecamatan_daerah_kode_pos">Kecamatan - Daerah - Kode Pos</string>
+    <string name="nama_produk">Nama Produk</string>
+    <string name="kategori">Kategori</string>
+    <string name="ukuran">Ukuran</string>
+    <string name="warna">Warna</string>
+    <string name="jumlah">Jumlah</string>
+    <string name="x">: X</string>
+    <string name="white">: White</string>
+    <string name="_10">: 10</string>
+    <string name="harga">Rp. 000.000</string>
+    <string name="product">Product</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_price">Rp. 000.000</string>
+    <string name="btn_warna">Warna</string>
+    <string name="btn_ukuran">Ukuran</string>
+    <string name="btn_kategori">Kategori</string>
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
+        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
+        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
+        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
+        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
+        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
+        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
+        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
+        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
+        bibendum, vel congue leo egestas.\n\n
+        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
+        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
+        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
+        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
+        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
+        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
+        est.\n\n
+        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
+        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
+        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
+        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
+        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
+        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
+        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
+        convallis.\n\n
+        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
+        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
+        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
+        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
+        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
+        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
+        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+    </string>
+    <string name="profileName">John Doe</string>
+    <string name="sapa">Hey,</string>
+    <string name="riwayat_transaksi">Riwayat Transaksi</string>
+    <string name="tambah_metode_pembayaran">Tambah Metode Pembayaran</string>
+    <string name="pusat_bantuan">Pusat Bantuan</string>
+    <string name="panduan_pengguna">Panduan Pengguna</string>
+    <string name="kebijakan_privasi">Kebijakan Privasi</string>
+    <string name="temukan_kami">Temukan Kami</string>
+    <string name="NumberVersion">Version 1.0</string>
+    <string name="logout">Keluar</string>
+    <string name="title_kebijakan_privasi">Kebijakan Privasi</string>
+    <string name="label_username">Username</string>
+    <string name="hint_username">Username...</string>
+    <string name="label_email">Email</string>
+    <string name="hint_email">Email...</string>
+    <string name="label_gender">Gender</string>
+    <string name="opt_gender_1">Laki-laki</string>
+    <string name="opt_gender_2">Perempuan</string>
+    <string name="label_birth_day">Birth Day</string>
+    <string name="hint_birth_date">Birth date</string>
+    <string name="label_phone_number">Phone Number</string>
+    <string name="hint_nomor_telepon">Nomor Telepon</string>
+    <string name="btn_simpan_profile">Simpan</string>
+    <string name="CD_imageProfile">Gambar Foto Profile User</string>
+    <string name="title_ubah_profile">Ubah Profile</string>
+    <string name="CD_ic_back">Tombol Icon Back</string>
+    <string name="CD_input_email">Send email to the client</string>
+    <string name="CD_bg_home_design">Gambar dari vektor untuk mempercantik halaman</string>
+    <string name="CD_search_button">Tombol yang digunakan untuk melakukan pencarian</string>
+    <string name="title_shop">Toko</string>
+    <string name="title_recomendation">Produk yang mungkin anda suka</string>
+    <string name="title_help_center">Help Center</string>
+    <string name="title_profile">profile</string>
 
+    <string-array name="country_codes">
+        <item>+62</item>
+        <item>+1</item>
+        <item>+44</item>
+        <item>+61</item>
+        <item>+91</item>
+        <item>+81</item>
+        <item>+49</item>
+        <item>+33</item>
+        <item>+55</item>
+        <item>+82</item>
+        <item>+66</item>
+        <item>+84</item>
+    </string-array>
 </resources>
