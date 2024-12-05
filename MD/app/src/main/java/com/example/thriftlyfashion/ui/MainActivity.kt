@@ -1,4 +1,4 @@
-package com.example.thriftlyfashion
+package com.example.thriftlyfashion.ui
 
 import android.os.Bundle
 import android.widget.ImageView
@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import com.example.thriftlyfashion.R
 import com.example.thriftlyfashion.ui.homepage.HomeFragment
 import com.example.thriftlyfashion.ui.cart.CartFragment
 import com.example.thriftlyfashion.ui.news.NewsFragment

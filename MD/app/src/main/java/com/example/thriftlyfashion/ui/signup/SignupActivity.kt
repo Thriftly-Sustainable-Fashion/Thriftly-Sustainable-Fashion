@@ -1,4 +1,4 @@
-package com.example.thriftlyfashion.ui.main
+package com.example.thriftlyfashion.ui.signup
 
 class SignupActivity {
 }
