@@ -5,4 +5,6 @@
     <color name="primary">#04558b</color>
     <color name="primary2">#98C1D9</color>
     <color name="grey">#A6AEBF</color>
+
+    <color name="full_white">#FFFFFF</color>
 </resources>
