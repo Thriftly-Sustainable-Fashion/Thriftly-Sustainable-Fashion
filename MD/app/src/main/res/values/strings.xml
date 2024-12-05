@@ -1,3 +1,32 @@
 <resources>
     <string name="app_name">ThriftlyFashion</string>
+    <string name="illustration_description">Ilustrasi aplikasi</string>
+    <string name="background_image_description">Background illustration</string>
+    <string name="hello_text">Hello</string>
+    <string name="button_register">Daftar</string>
+    <string name="login_title">Login</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password">Lupa password?</string>
+    <string name="login_button">Masuk</string>
+    <string name="register_prompt">Belum punya akun? Daftar disini</string>
+    <string name="or_text">atau</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="splash_logo_description">Logo aplikasi ThriftlyFashion</string>
+    <string name="background_description">Bg Ilustrasi</string>
+    <string name="background_ilustration">apk ilustrasi</string>
+    <string name="signup_title">SignUp</string>
+    <string name="name_hint">Nama Lengkap</string>
+    <string name="email_hint">Email</string>
+    <string name="confirmation_password">Konfirmasi Password</string>
+    <string name="back_button">Kembali</string>
+    <string name="ok_button">OK</string>
+    <string name="confirmation_button">Konfirmasi</string>
+    <string name="registration">Pendaftaran Berhasil!</string>
+    <string name="message">Akun untuk telah berhasil dibuat.</string>
+
+
+
+
 </resources>
