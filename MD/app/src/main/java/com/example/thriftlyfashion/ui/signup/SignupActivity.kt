@@ -98,6 +98,7 @@ class SignupActivity : AppCompatActivity() {
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         passwordField.setSelection(passwordField.text.length)
+
         toggleButton.setImageResource(
             if (isPasswordVisible) R.drawable.baseline_visibility_off_24 else R.drawable.baseline_visibility_24
         )
@@ -110,6 +111,7 @@ class SignupActivity : AppCompatActivity() {
         } else {
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
+
         confirmPasswordField.setSelection(confirmPasswordField.text.length)
         toggleButton.setImageResource(
             if (isConfirmPasswordVisible) R.drawable.baseline_visibility_off_24 else R.drawable.baseline_visibility_24

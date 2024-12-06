@@ -1,90 +1,89 @@
 package com.example.thriftlyfashion.ui.product
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.data.CartDatabaseHelper
 
 class ProductDetailActivity : AppCompatActivity() {
-    private var activeButton: Button? = null
 
-    private var selectedColor: String? = null
-    private var selectedSize: String? = null
-    private var selectedCategory: String? = null
+    private var productQuantity = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_detail)
 
+        // Inisialisasi views
         val btnBack: ImageView = findViewById(R.id.id_btnBack)
         val productImage: ImageView = findViewById(R.id.id_productImage)
         val productName: TextView = findViewById(R.id.id_productName)
         val productPrice: TextView = findViewById(R.id.id_productName2)
-        val colorButton: Button = findViewById(R.id.id_colors)
-        val sizeButton: Button = findViewById(R.id.id_size)
-        val categoryButton: Button = findViewById(R.id.id_category)
+        val categoryButton: TextView = findViewById(R.id.id_productCategory)
+        val amountProduct: TextView = findViewById(R.id.amountProduct)
+        val btnMinus: ImageView = findViewById(R.id.imageView5)
+        val btnPlus: ImageView = findViewById(R.id.imageView7)
+        val btnAddToCart: Button = findViewById(R.id.button)
 
+        // Mendapatkan data dari intent
         val name = intent.getStringExtra("PRODUCT_NAME") ?: "Nama Produk"
         val category = intent.getStringExtra("PRODUCT_CATEGORY") ?: "Kategori"
         val price = intent.getStringExtra("PRODUCT_PRICE") ?: "Rp. 0"
         val image = intent.getIntExtra("PRODUCT_IMAGE", R.drawable.image)
 
+        // Mengisi data ke views
         productName.text = name
         productPrice.text = price
-        productImage.setImageResource(image)
         categoryButton.text = category
+        productImage.setImageResource(image)
 
+        // Tombol kembali
         btnBack.setOnClickListener {
             finish()
         }
 
-        colorButton.setOnClickListener {
-            setActiveButton(colorButton)
-            loadFragment(ProductColorFragment())
+        // Mengurangi jumlah produk
+        btnMinus.setOnClickListener {
+            if (productQuantity > 1) {
+                productQuantity--
+                amountProduct.text = productQuantity.toString()
+            } else {
+                Toast.makeText(this, "Jumlah produk minimal adalah 1", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        sizeButton.setOnClickListener {
-            setActiveButton(sizeButton)
-            loadFragment(ProductSizeFragment())
+        // Menambah jumlah produk
+        btnPlus.setOnClickListener {
+            productQuantity++
+            amountProduct.text = productQuantity.toString()
         }
 
-        categoryButton.setOnClickListener {
-            setActiveButton(categoryButton)
-            loadFragment(ProductCategoryFragment())
+        // Menambahkan ke keranjang
+        btnAddToCart.setOnClickListener {
+            val dbHelper = CartDatabaseHelper(this)
+            val db = dbHelper.writableDatabase
+
+            val values = ContentValues().apply {
+                put("name", name)
+                put("category", category)
+                put("price", price)
+                put("quantity", productQuantity)
+            }
+
+            val newRowId = db.insert("cart", null, values)
+
+            if (newRowId != -1L) {
+                val message = "$name telah ditambahkan ke keranjang sebanyak $productQuantity item"
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Gagal menambahkan ke keranjang", Toast.LENGTH_SHORT).show()
+            }
+
+            db.close()
         }
-
-        // Set initial values if any
-        setActiveButton(colorButton)
-        loadFragment(ProductColorFragment())
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.frame_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    private fun setActiveButton(button: Button) {
-        activeButton?.backgroundTintList = ContextCompat.getColorStateList(this, R.color.white)
-        button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.full_white)
-
-        activeButton = button
-    }
-
-    // Method to update selected data
-    fun updateSelectedData(color: String?, size: String?, category: String?) {
-        selectedColor = color
-        selectedSize = size
-        selectedCategory = category
-
-        // Update the UI in the activity
-        findViewById<Button>(R.id.id_colors).text = selectedColor ?: "Select Color"
-        findViewById<Button>(R.id.id_size).text = selectedSize ?: "Select Size"
-        findViewById<Button>(R.id.id_category).text = selectedCategory ?: "Select Category"
     }
 }

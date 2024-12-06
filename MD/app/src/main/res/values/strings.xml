@@ -39,14 +39,13 @@
     <string name="provinsi_kabupaten">Provinsi - Kabupaten</string>
     <string name="kecamatan_daerah_kode_pos">Kecamatan - Daerah - Kode Pos</string>
     <string name="nama_produk">Nama Produk</string>
-    <string name="kategori">Kategori</string>
-    <string name="ukuran">Ukuran</string>
-    <string name="warna">Warna</string>
-    <string name="jumlah">Jumlah</string>
-    <string name="x">: X</string>
-    <string name="white">: White</string>
-    <string name="_10">: 10</string>
-    <string name="harga">Rp. 000.000</string>
+    <string name="title_category">Kategori</string>
+    <string name="title_size">Ukuran</string>
+    <string name="title_color">Warna</string>
+    <string name="title_amount">Jumlah</string>
+    <string name="size">: X</string>
+    <string name="color">: White</string>
+    <string name="amount">: 10</string>
     <string name="product">Product</string>
     <string name="product_name">Product Name</string>
     <string name="product_price">Rp. 000.000</string>
@@ -127,6 +126,15 @@
     <string name="title_recomendation">Produk yang mungkin anda suka</string>
     <string name="title_help_center">Help Center</string>
     <string name="title_profile">profile</string>
+    <string name="product_category">product category</string>
+    <string name="store_name">Nama Toko</string>
+    <string name="CD_ic_store">Icon dari toko yang menjual produk ini</string>
+    <string name="CD_ic_favorite">Tombol untuk menandai produk sebagai favorit</string>
+    <string name="CD_img_image_product">Gambar dari produk</string>
+    <string name="quantity_product">10</string>
+    <string name="add_cart">Tambahkan Ke Keranjang</string>
+    <string name="CD_minus">tombol untuk mengurangi jumlah produk yang mau dibeli</string>
+    <string name="CD_plus">tombol untuk menambah jumlah produk yang mau dibeli</string>
 
     <string-array name="country_codes">
         <item>+62</item>

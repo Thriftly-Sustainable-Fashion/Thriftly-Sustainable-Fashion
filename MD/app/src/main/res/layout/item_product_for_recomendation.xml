@@ -16,6 +16,7 @@
             android:id="@+id/imageView14"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:contentDescription="@string/CD_img_image_product"
             android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
 
@@ -25,14 +26,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/nama_produk"
-            android:textSize="20dp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView17"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/kategori" />
+            android:textSize="16sp"
+            android:text="@string/product_category" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
