@@ -20,7 +20,7 @@ Thrifly helps customers shop responsibly, save money, and find items that expres
 
 
 ## Application Features:
-```sh
+```
 1.Find Nearby Store
 2.Tailored Recommendation
     - Based on user similarity matrix
@@ -45,9 +45,8 @@ Thrifly helps customers shop responsibly, save money, and find items that expres
 This project we combined 3 informatics diciplines that is MD, ML, and CC. To know more about the detail here is the provided work detail for each diciplines
 ***
 #### Cloud Computing
-```sh
 Our team will design and implement the cloud infrastructure that powers the Thriftly application. We'll start by defining the architecture and estimating costs. Next, we'll set up the core services like databases and storage. We'll then develop and test APIs to ensure smooth communication between different parts of the system. Finally, we'll optimize performance, implement security measures, and deploy the infrastructure to the cloud.
-```
+
 - Planning: Determining needs, designing the cloud structure, and estimating costs.
 - Development: Setting up basic cloud services, building databases, and developing APIs.
 -  Testing: Testing all components to ensure performance and security.
@@ -62,9 +61,8 @@ In essence, the project will build a robust cloud infrastructure to support the 
 ***
 #### Machine Learning
 
-```sh
 Our team will build a system that can provide appropriate product recommendations for each Thriftly user. The process will start by collecting and processing user data. Next, we'll build a smart computer model to learn users' buying patterns. This model will continue to learn and become more accurate over time.
-```
+
 ###### In a nutshell, the steps are:
 - Understanding needs: We will find out what kind of recommendations users want.
 - Collecting data: We will collect data on products that users have seen, bought and liked.
@@ -77,9 +75,9 @@ In other words, we want to create a feature that guesses, “If you like this pr
 
 ***
 #### Mobile Development
-```sh
+
 This e-commerce mobile app development plan was comprehensively designed and structured over five weeks, with a phased focus on planning, design, development, and testing.
-```
+
 > Week 1: Planning
 Kick-off: Understanding core features and user flows.
 Initial design: Creating an outline and mockup of the main screen.
