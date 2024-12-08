@@ -1,144 +1,202 @@
+package com.example.thriftlyfashion.database
+
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.thriftlyfashion.Product
+import com.example.thriftlyfashion.model.Product
+import com.example.thriftlyfashion.model.CartItem
+import com.example.thriftlyfashion.model.Category
+import com.example.thriftlyfashion.model.Subcategory
+import com.example.thriftlyfashion.model.User
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("""CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            role TEXT NOT NULL DEFAULT 'user'
-        );""")
-
-        db.execSQL("""CREATE TABLE IF NOT EXISTS products (
-            product_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            store_id INTEGER NOT NULL,
-            name TEXT NOT NULL,
-            description TEXT,
-            price REAL NOT NULL,
-            quantity INTEGER NOT NULL,
-            category_id INTEGER NOT NULL,
-            subcategory_id INTEGER NOT NULL,
-            created_at TEXT NOT NULL,
-            FOREIGN KEY(store_id) REFERENCES users(id),
-            FOREIGN KEY(category_id) REFERENCES categories(id),
-            FOREIGN KEY(subcategory_id) REFERENCES subcategories(id)
-        );""")
-
-        db.execSQL("""CREATE TABLE IF NOT EXISTS orders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            order_date TEXT NOT NULL,
-            user_id INTEGER NOT NULL,
-            total_price REAL NOT NULL,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        );""")
-
-        db.execSQL("""CREATE TABLE IF NOT EXISTS order_details (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            order_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
-            quantity INTEGER NOT NULL,
-            price REAL NOT NULL,
-            FOREIGN KEY(order_id) REFERENCES orders(id),
-            FOREIGN KEY(product_id) REFERENCES products(product_id)
-        );""")
-
-        db.execSQL("""CREATE TABLE IF NOT EXISTS cart (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            category TEXT,
-            price TEXT NOT NULL,
-            quantity INTEGER NOT NULL,
-            image INTEGER NOT NULL
-        );""")
-
-        db.execSQL("""CREATE TABLE IF NOT EXISTS categories (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL
-        );""")
-
-        db.execSQL("""CREATE TABLE IF NOT EXISTS subcategories (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            category_id INTEGER NOT NULL,
-            FOREIGN KEY(category_id) REFERENCES categories(id)
-        );""")
+        db.execSQL(Product.CREATE_TABLE)
+        db.execSQL(CartItem.CREATE_TABLE)
+        db.execSQL(Category.CREATE_TABLE)
+        db.execSQL(Subcategory.CREATE_TABLE)
+        db.execSQL(User.CREATE_TABLE)
+//        db.execSQL(Order.CREATE_TABLE)
+//        db.execSQL(OrderDetail.CREATE_TABLE)
     }
 
-
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Drop older tables if they exist
-        db.execSQL("DROP TABLE IF EXISTS order_details")
-        db.execSQL("DROP TABLE IF EXISTS orders")
+//        db.execSQL("DROP TABLE IF EXISTS order_details")
+//        db.execSQL("DROP TABLE IF EXISTS orders")
         db.execSQL("DROP TABLE IF EXISTS products")
         db.execSQL("DROP TABLE IF EXISTS users")
         db.execSQL("DROP TABLE IF EXISTS cart")
-
-        // Create tables again
         db.execSQL("DROP TABLE IF EXISTS categories")
         db.execSQL("DROP TABLE IF EXISTS subcategories")
         onCreate(db)
     }
 
-    fun insertIntoCart(name: String, category: String, price: String, quantity: Int, image: Int): Long {
+    // CRUD product
+    fun insertProduct(
+        productId: String,
+        storeId: Int,
+        name: String,
+        description: String?,
+        price: Double,
+        quantity: Int,
+        category: String,
+        color: String,
+        size: String,
+        createdAt: String,
+        images: String
+    ): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
-            put("name", name)
-            put("category", category)
-            put("price", price)
-            put("quantity", quantity)
-            put("image", image)
-        }
-        val result = db.insert("cart", null, values)
-        db.close()
-        return result
-    }
-
-    fun getAllCartItems(): List<Product> {
-        val cartItems = mutableListOf<Product>()
-        val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM cart", null)
-
-        if (cursor.moveToFirst()) {
-            do {
-//                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
-                val category = cursor.getString(cursor.getColumnIndexOrThrow("category"))
-                val price = cursor.getString(cursor.getColumnIndexOrThrow("price"))
-                val quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"))
-                val image = cursor.getInt(cursor.getColumnIndexOrThrow("image"))
-
-                // Tambahkan data ke daftar
-                cartItems.add(Product(image, name, category, price, "", "", quantity.toString()))
-            } while (cursor.moveToNext())
-        }
-
-        cursor.close()
-        db.close()
-
-        return cartItems
-    }
-
-    fun insertProduct(name: String, description: String, price: Double, userId: Int): Long {
-        val db = this.writableDatabase
-        val values = ContentValues().apply {
+            put("product_id", productId)
+            put("store_id", storeId)
             put("name", name)
             put("description", description)
             put("price", price)
-            put("user_id", userId)
+            put("quantity", quantity)
+            put("category", category)
+            put("color", color)
+            put("size", size)
+            put("created_at", createdAt)
+            put("images", images)
         }
         val result = db.insert("products", null, values)
         db.close()
         return result
     }
 
+    fun getAllProducts(): List<Product> {
+        val db = this.readableDatabase
+        val productList = mutableListOf<Product>()
+        val query = "SELECT * FROM products"
+
+        val cursor = db.rawQuery(query, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val product = Product(
+                    productId = cursor.getString(cursor.getColumnIndexOrThrow("product_id")),
+                    storeId = cursor.getInt(cursor.getColumnIndexOrThrow("store_id")),
+                    images = cursor.getString(cursor.getColumnIndexOrThrow("images")),
+                    name = cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                    description = cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                    price = cursor.getDouble(cursor.getColumnIndexOrThrow("price")),
+                    quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity")),
+                    category = cursor.getString(cursor.getColumnIndexOrThrow("category")),
+                    color = cursor.getString(cursor.getColumnIndexOrThrow("color")),
+                    size = cursor.getString(cursor.getColumnIndexOrThrow("size")),
+                    createdAt = cursor.getString(cursor.getColumnIndexOrThrow("created_at"))
+                )
+                productList.add(product)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return productList
+    }
+
+    // CRUD cart
+    fun insertIntoCart(
+        productId: String,
+        image: String,
+        name: String,
+        category: String,
+        size: String,
+        color: String,
+        quantity: Int,
+        totalPrice: Double
+    ): Long {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("product_id", productId)
+            put("image", image)
+            put("name", name)
+            put("category", category)
+            put("size", size)
+            put("color", color)
+            put("quantity", quantity)
+            put("total_price", totalPrice)
+        }
+        return db.insert("cart", null, values)
+    }
+
+    fun getAllCartItems(): List<CartItem> {
+        val cartItems = mutableListOf<CartItem>()
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM cart", null)
+        cursor.use {
+            while (cursor.moveToNext()) {
+                cartItems.add(
+                    CartItem(
+                        id = cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                        productId = cursor.getString(cursor.getColumnIndexOrThrow("product_id")),
+                        image = cursor.getString(cursor.getColumnIndexOrThrow("image")),
+                        name = cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                        category = cursor.getString(cursor.getColumnIndexOrThrow("category")),
+                        size = cursor.getString(cursor.getColumnIndexOrThrow("size")),
+                        color = cursor.getString(cursor.getColumnIndexOrThrow("color")),
+                        quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity")),
+                        totalPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("total_price"))
+                    )
+                )
+            }
+        }
+        return cartItems
+    }
+
+    fun deleteCartItem(id: Int): Int {
+        val db = writableDatabase
+        return db.delete("cart", "id = ?", arrayOf(id.toString()))
+    }
+
+    fun updateCartItem(id: Int, quantity: Int, totalPrice: Double): Int {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("quantity", quantity)
+            put("total_price", totalPrice)
+        }
+        return db.update("cart", values, "id = ?", arrayOf(id.toString()))
+    }
+
+
+    // CRUD account
+    fun insertUserAccount(name: String, email: String, password: String): Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put("name", name)
+            put("email", email)
+            put("password", password)
+            put("role", "user")  // Default role is 'user'
+        }
+        val result = db.insert("users", null, values)
+        db.close()
+        return result
+    }
+
+    fun getUserByEmail(email: String): User? {
+        val db = this.readableDatabase
+        val cursor = db.query(
+            "users", null, "email = ?", arrayOf(email), null, null, null
+        )
+        if (cursor.moveToFirst()) {
+            val user = User(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                name = cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                email = cursor.getString(cursor.getColumnIndexOrThrow("email")),
+                password = cursor.getString(cursor.getColumnIndexOrThrow("password")),
+                role = cursor.getString(cursor.getColumnIndexOrThrow("role"))
+            )
+            cursor.close()
+            db.close()
+            return user
+        }
+        cursor.close()
+        db.close()
+        return null
+    }
+
     companion object {
         private const val DATABASE_NAME = "thriftly.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 6
     }
 }

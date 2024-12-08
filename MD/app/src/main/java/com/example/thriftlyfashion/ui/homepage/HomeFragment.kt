@@ -2,14 +2,16 @@ package com.example.thriftlyfashion.ui.homepage
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.thriftlyfashion.Product
+import com.example.thriftlyfashion.model.Product
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.database.DatabaseHelper
 import com.example.thriftlyfashion.ui.search.SearchActivity
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.FlexWrap
@@ -39,14 +41,25 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             R.drawable.hero4
         )
 
-        val productList = listOf(
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 2", "Category 2", "Rp 750.000", "", "", "")
-        )
+        val dbHelper = DatabaseHelper(requireContext())
+        val allProducts = dbHelper.getAllProducts()
+
+        val productList = allProducts.map { product ->
+            Product(
+                productId = product.productId,
+                storeId = product.storeId,
+                images = product.images,
+                name = product.name,
+                category = product.category,
+                price = product.price,
+                description = product.description ?: "",
+                color = product.color,
+                size = product.size,
+                quantity = product.quantity,
+                createdAt = product.createdAt
+            )
+        }
+
 
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager

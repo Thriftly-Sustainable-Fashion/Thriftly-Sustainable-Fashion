@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="380dp"
         android:layout_marginTop="140dp"
-        android:contentDescription="Background Design"
+        android:contentDescription="@string/CD_background_design"
         android:scaleType="centerCrop"
         android:src="@drawable/bg_homepage" />
 
@@ -44,7 +44,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:paddingEnd="10dp">
+                    android:paddingEnd="10dp"
+                    tools:ignore="RtlSymmetry">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/id_search"
@@ -61,9 +62,10 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@null"
-                        android:contentDescription="Search Button"
+                        android:contentDescription="@string/CD_search_button"
                         android:src="@drawable/ic_search"
-                        app:tint="@color/black" />
+                        app:tint="@color/black"
+                        tools:ignore="InefficientWeight" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -101,7 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="Toko"
+                        android:text="@string/title_shop"
                         android:textColor="@color/primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -119,7 +121,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
-                        android:text="Produk yang mungkin anda suka"
+                        android:text="@string/title_recommendation"
                         android:textColor="@color/primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />

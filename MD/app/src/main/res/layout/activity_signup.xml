@@ -68,6 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="25dp"
+                android:autofillHints=""
                 android:background="@drawable/imput_background"
                 android:fontFamily="@font/poppins_light"
                 android:hint="@string/name_hint"
@@ -79,6 +80,7 @@
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:hint="@string/email_hint"
                 android:fontFamily="@font/poppins_light"
                 android:textSize="20sp"
@@ -96,6 +98,7 @@
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:hint="@string/password_hint"
                     android:fontFamily="@font/poppins_light"
                     android:textSize="20sp"
@@ -110,6 +113,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="16dp"
                     android:layout_centerVertical="true"
+                    android:contentDescription="TODO"
                     android:src="@drawable/baseline_visibility_24" />
             </RelativeLayout>
 
@@ -122,6 +126,7 @@
                     android:id="@+id/etConfirPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:hint="@string/confirmation_password"
                     android:fontFamily="@font/poppins_light"
                     android:textSize="20sp"
@@ -136,6 +141,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="16dp"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/CD_toogle_password_visible"
                     android:src="@drawable/baseline_visibility_24" />
             </RelativeLayout>
 

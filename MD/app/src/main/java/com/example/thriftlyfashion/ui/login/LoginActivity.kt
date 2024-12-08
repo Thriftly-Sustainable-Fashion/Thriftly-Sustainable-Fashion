@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.database.DatabaseHelper
 import com.example.thriftlyfashion.ui.MainActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -34,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
 
         btnLogin.setOnClickListener { handleLogin() }
         ivTogglePassword.setOnClickListener { togglePasswordVisibility() }
+
         tvForgetPassword.setOnClickListener {
             Toast.makeText(this, "Lupa password? Fitur ini belum tersedia.", Toast.LENGTH_SHORT).show()
         }
@@ -43,23 +45,25 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun handleLogin() {
-        val username = etUsername.text.toString().trim()
+        val email = etUsername.text.toString().trim()
         val password = etPassword.text.toString().trim()
 
-        if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Username dan password tidak boleh kosong.", Toast.LENGTH_SHORT).show()
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Email dan password tidak boleh kosong.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (username == "user" && password == "password") {
+        val dbHelper = DatabaseHelper(this)
+        val user = dbHelper.getUserByEmail(email)
+
+        if (user != null && user.password == password) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         } else {
-            Toast.makeText(this, "Username atau password salah.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Email atau password salah.", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     private fun togglePasswordVisibility() {
         if (isPasswordVisible) {

@@ -94,10 +94,18 @@
                             android:text="@string/product_category"
                             android:textColor="@color/primary"
                             android:textSize="16sp"/>
+
+                        <TextView
+                            android:id="@+id/id_productQuantity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/product_quantity"
+                            android:textColor="@color/primary"
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                     <ImageView
-                        android:id="@+id/imageView6"
+                        android:id="@+id/id_favorite"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:contentDescription="@string/CD_ic_favorite"
@@ -106,8 +114,48 @@
                         app:tint="@color/primary" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/id_productDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/product_descrirption"
+                            android:textColor="@color/primary"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/id_productColor"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/product_color"
+                            android:textColor="@color/primary"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/id_productSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/product_size"
+                            android:textColor="@color/primary"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
                 <TextView
-                    android:id="@+id/id_productName2"
+                    android:id="@+id/id_productPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"

@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_cart"
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:layout_marginStart="5dp"
@@ -19,12 +20,11 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="10dp"
-            android:paddingEnd="10dp"
             tools:ignore="RtlSymmetry">
 
             <CheckBox
-                android:id="@+id/checkBox"
-                android:layout_width="48dp"
+                android:id="@+id/id_checkBox"
+                android:layout_width="38dp"
                 android:layout_height="48dp"
                 android:gravity="start"
                 android:paddingStart="10dp" />
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/nama_produk"
                 android:textColor="@color/primary"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -73,7 +73,7 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/product_category"
                 android:textColor="@color/primary"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -81,7 +81,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="70dp"
+                    android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -96,7 +96,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/color"
+                        android:text="@string/title_color"
                         android:textColor="@color/primary"
                         android:textSize="12sp" />
 
@@ -117,8 +117,8 @@
                         android:id="@+id/id_productSize"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/primary"
                         android:text="@string/size"
+                        android:textColor="@color/primary"
                         android:textSize="12sp" />
 
                     <TextView
@@ -146,7 +146,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/product_price"
                 android:textColor="@color/primary"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
 

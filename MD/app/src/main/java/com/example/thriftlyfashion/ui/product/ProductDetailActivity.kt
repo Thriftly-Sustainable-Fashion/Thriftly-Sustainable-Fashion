@@ -1,89 +1,103 @@
 package com.example.thriftlyfashion.ui.product
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.data.CartDatabaseHelper
+import com.example.thriftlyfashion.database.DatabaseHelper
 
 class ProductDetailActivity : AppCompatActivity() {
 
-    private var productQuantity = 1
+    private var pQuantity = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_detail)
 
-        // Inisialisasi views
         val btnBack: ImageView = findViewById(R.id.id_btnBack)
         val productImage: ImageView = findViewById(R.id.id_productImage)
         val productName: TextView = findViewById(R.id.id_productName)
-        val productPrice: TextView = findViewById(R.id.id_productName2)
-        val categoryButton: TextView = findViewById(R.id.id_productCategory)
+        val productPrice: TextView = findViewById(R.id.id_productPrice)
+        val productCategory: TextView = findViewById(R.id.id_productCategory)
+        val productDescription: TextView = findViewById(R.id.id_productDescription)
+        val productColor: TextView = findViewById(R.id.id_productColor)
+        val productSize: TextView = findViewById(R.id.id_productSize)
+        val productQuantity: TextView = findViewById(R.id.id_productQuantity)
         val amountProduct: TextView = findViewById(R.id.amountProduct)
         val btnMinus: ImageView = findViewById(R.id.imageView5)
         val btnPlus: ImageView = findViewById(R.id.imageView7)
         val btnAddToCart: Button = findViewById(R.id.button)
 
-        // Mendapatkan data dari intent
+        val productId = intent.getStringExtra("PRODUCT_ID") ?: ""
+        val storeId = intent.getIntExtra("STORE_ID", -1)
         val name = intent.getStringExtra("PRODUCT_NAME") ?: "Nama Produk"
         val category = intent.getStringExtra("PRODUCT_CATEGORY") ?: "Kategori"
-        val price = intent.getStringExtra("PRODUCT_PRICE") ?: "Rp. 0"
-        val image = intent.getIntExtra("PRODUCT_IMAGE", R.drawable.image)
+        val price = intent.getDoubleExtra("PRODUCT_PRICE", 0.0)
+        val image = intent.getStringExtra("PRODUCT_IMAGE") ?: ""
+        val description = intent.getStringExtra("PRODUCT_DESCRIPTION") ?: "Deskripsi tidak tersedia"
+        val color = intent.getStringExtra("PRODUCT_COLOR") ?: "Warna tidak tersedia"
+        val size = intent.getStringExtra("PRODUCT_SIZE") ?: "Ukuran tidak tersedia"
+        val quantity = intent.getIntExtra("PRODUCT_QUANTITY", 0)
+        val createAt = intent.getStringExtra("PRODUCT_CREATEAT") ?: "Create at tidak tersedia"
 
-        // Mengisi data ke views
+
         productName.text = name
-        productPrice.text = price
-        categoryButton.text = category
-        productImage.setImageResource(image)
+        productPrice.text = "Rp ${String.format("%,.0f", price)}"
+        productCategory.text = category
+        productDescription.text = description
+        productColor.text = "Color : $color"
+        productSize.text = "Size : $size"
+        productQuantity.text = "Product quantity : $quantity item"
 
-        // Tombol kembali
+        Glide.with(this)
+            .load(image)
+            .placeholder(R.drawable.image)
+            .into(productImage)
+
         btnBack.setOnClickListener {
             finish()
         }
 
-        // Mengurangi jumlah produk
         btnMinus.setOnClickListener {
-            if (productQuantity > 1) {
-                productQuantity--
-                amountProduct.text = productQuantity.toString()
+            if (pQuantity > 1) {
+                pQuantity--
+                amountProduct.text = pQuantity.toString()
             } else {
                 Toast.makeText(this, "Jumlah produk minimal adalah 1", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Menambah jumlah produk
         btnPlus.setOnClickListener {
-            productQuantity++
-            amountProduct.text = productQuantity.toString()
+            pQuantity++
+            amountProduct.text = pQuantity.toString()
         }
 
-        // Menambahkan ke keranjang
         btnAddToCart.setOnClickListener {
-            val dbHelper = CartDatabaseHelper(this)
-            val db = dbHelper.writableDatabase
+            val dbHelper = DatabaseHelper(this)
+            val totalPrice = price * pQuantity
 
-            val values = ContentValues().apply {
-                put("name", name)
-                put("category", category)
-                put("price", price)
-                put("quantity", productQuantity)
-            }
+            val result = dbHelper.insertIntoCart(
+                productId = productId,
+                image = image,
+                name = name,
+                category = category,
+                size = size,
+                color = color,
+                quantity = pQuantity,
+                totalPrice = totalPrice
+            )
 
-            val newRowId = db.insert("cart", null, values)
-
-            if (newRowId != -1L) {
-                val message = "$name telah ditambahkan ke keranjang sebanyak $productQuantity item"
+            if (result != -1L) {
+                val message = "$name telah ditambahkan ke keranjang sebanyak $pQuantity item. Total: Rp ${String.format("%,.0f", totalPrice)}"
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Gagal menambahkan ke keranjang", Toast.LENGTH_SHORT).show()
             }
-
-            db.close()
         }
+
     }
 }

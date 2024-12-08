@@ -1,0 +1,24 @@
+[
+  {
+    "product_id": "1A",
+    "store_id": "123",
+    "name": "baju",
+    "description": "Baju bekas tapi keren",
+    "price": 100000,
+    "quantity": 10,
+    "category": "Baju",
+    "color": "Merah",
+    "size": "M"
+  },
+  {
+    "product_id": "2A",
+    "store_id": "123",
+    "name": "baju",
+    "description": "Baju bekas tapi keren",
+    "price": 120000,
+    "quantity": 10,
+    "category": "Baju",
+    "color": "Biru",
+    "size": "L"
+  }
+]

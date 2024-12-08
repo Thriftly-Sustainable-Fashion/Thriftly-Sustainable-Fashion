@@ -4,12 +4,13 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.database.DatabaseHelper
 import com.example.thriftlyfashion.ui.login.LoginActivity
 
 class SignupActivity : AppCompatActivity() {
@@ -44,7 +45,7 @@ class SignupActivity : AppCompatActivity() {
         val backButton = findViewById<Button>(R.id.backButton)
 
         val etNama = findViewById<EditText>(R.id.etNama)
-        val email = findViewById<EditText>(R.id.email)
+        val etEmail = findViewById<EditText>(R.id.email)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirPassword)
 
@@ -58,30 +59,44 @@ class SignupActivity : AppCompatActivity() {
 
         signupButton.setOnClickListener {
             val name = etNama.text.toString().trim()
-            val emailText = email.text.toString().trim()
+            val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
-            val confirmPassword = etConfirmPassword.text.toString()
 
-            if (name.isEmpty() || emailText.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show()
+            if (name.isEmpty()) {
+                Log.e("SignupActivity", "Nama tidak boleh kosong!")
+                Toast.makeText(this, "Nama tidak boleh kosong!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (password != confirmPassword) {
-                Toast.makeText(this, "Password dan konfirmasi password tidak cocok!", Toast.LENGTH_SHORT).show()
+            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Log.e("SignupActivity", "Email tidak valid: $email")
+                Toast.makeText(this, "Email tidak valid!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            AlertDialog.Builder(this).apply {
-                setTitle("Pendaftaran Berhasil!")
-                setMessage("Akun untuk $emailText telah berhasil dibuat.")
-                setPositiveButton("OK") { _, _ ->
-                    val intent = Intent(this@SignupActivity, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-                create()
-                show()
+            if (password.isEmpty()) {
+                Log.e("SignupActivity", "Password tidak boleh kosong!")
+                Toast.makeText(this, "Password tidak boleh kosong!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password.length < 8) {
+                Log.e("SignupActivity", "Password terlalu pendek: $password")
+                Toast.makeText(this, "Password harus memiliki minimal 8 karakter!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val dbHelper = DatabaseHelper(this)
+            val result = dbHelper.insertUserAccount(name, email, password)
+
+            if (result != -1L) {
+                Log.d("SignupActivity", "Akun berhasil dibuat: $email")
+                val intent = Intent(this@SignupActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                Log.e("SignupActivity", "Gagal membuat akun untuk: $email")
+                Toast.makeText(this, "Gagal membuat akun!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -89,6 +104,7 @@ class SignupActivity : AppCompatActivity() {
             finish()
         }
     }
+
 
     private fun togglePasswordVisibility(passwordField: EditText, toggleButton: ImageView) {
         isPasswordVisible = !isPasswordVisible
