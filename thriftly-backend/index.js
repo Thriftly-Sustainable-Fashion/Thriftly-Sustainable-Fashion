@@ -3,7 +3,8 @@ const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');  
 const bodyParser = require('body-parser');  
 const cors = require('cors');  
-const jwt = require('jsonwebtoken');  
+const jwt = require('jsonwebtoken');
+const winston = require('winston');  
 require('dotenv').config();  
 
 const app = express();  
