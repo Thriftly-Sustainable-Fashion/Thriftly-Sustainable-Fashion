@@ -15,14 +15,14 @@ app.use(bodyParser.json());
 
 // Database Connection Pool  
 const pool = mysql.createPool({  
-    host: process.env.DB_HOST || 'localhost',  
+    host: process.env.DB_HOST || '34.101.195.146',  
     user: process.env.DB_USER || 'root',  
-    password: process.env.DB_PASSWORD || '',  
-    database: process.env.DB_NAME || 'thriftly',  
+    password: process.env.DB_PASSWORD || 'kimochi:)-!@#',  
+    database: process.env.DB_NAME || 'thriftly-mysql-db',  
     waitForConnections: true,  
     connectionLimit: 10,  
     queueLimit: 0  
-});  
+});   
 
 // JWT Token Generator  
 const generateToken = (user) => {  
