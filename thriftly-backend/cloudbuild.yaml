@@ -24,3 +24,7 @@ steps:
 
 images:  
   - 'gcr.io/$PROJECT_ID/thriftly-backend'  
+
+
+options:  
+  logging: CLOUD_LOGGING_ONLY  
