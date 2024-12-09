@@ -1,6 +1,5 @@
 options:  
   logging: CLOUD_LOGGING_ONLY  
-  logs_bucket: gs://thriftly-build-logs  
 
 steps:  
   # Step 0: Build Docker image  
