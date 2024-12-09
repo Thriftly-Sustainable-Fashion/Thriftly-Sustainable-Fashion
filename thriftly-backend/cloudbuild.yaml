@@ -1,12 +1,16 @@
+options:  
+  logging: CLOUD_LOGGING_ONLY  
+  logs_bucket: gs://thriftly-build-logs  
+
 steps:  
   # Step 0: Build Docker image  
   - name: 'gcr.io/cloud-builders/docker'  
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/thriftly-backend', '-f', 'thriftly-backend/Dockerfile', 'thriftly-backend']  
-  
+
   # Step 1: Push Docker image to Google Container Registry  
   - name: 'gcr.io/cloud-builders/docker'  
     args: ['push', 'gcr.io/$PROJECT_ID/thriftly-backend']  
-  
+
   # Step 2: Deploy to Google Cloud Run  
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'  
     entrypoint: gcloud  
@@ -21,6 +25,6 @@ steps:
       - '--region'  
       - 'us-central1'  
       - '--allow-unauthenticated'  
-  
+
 images:  
   - 'gcr.io/$PROJECT_ID/thriftly-backend'  
