@@ -3,15 +3,10 @@ const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');  
 const bodyParser = require('body-parser');  
 const cors = require('cors');  
-const jwt = require('jsonwebtoken');
-const winston = require('winston');  
 require('dotenv').config();  
 
 const app = express();  
-const PORT = process.env.PORT || 8080; // Gunakan PORT dari environment variable  
-app.listen(PORT, () => {  
-    console.log(`Server running on port ${PORT}`);  
-});  
+const PORT = process.env.PORT || 3000;  
 
 // Middleware  
 app.use(cors());  
@@ -26,54 +21,30 @@ const pool = mysql.createPool({
     waitForConnections: true,  
     connectionLimit: 10,  
     queueLimit: 0  
-});   
-
-// JWT Token Generator  
-const generateToken = (user) => {  
-    return jwt.sign(  
-        { userId: user.user_id, email: user.email },  
-        process.env.JWT_SECRET || 'x/7Yp8B<MKrcQeh=P%)*y',  
-        { expiresIn: '1h' }  
-    );  
-};  
-
-// JWT Authentication Middleware  
-const verifyToken = (req, res, next) => {  
-    const token = req.headers.authorization?.split(' ')[1];  
-    if (!token) {  
-        return res.status(401).json({ message: 'Unauthorized' });  
-    }  
-    try {  
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'x/7Yp8B<MKrcQeh=P%)*y');  
-        req.user = decoded;  
-        next();  
-    } catch (error) {  
-        res.status(401).json({ message: 'Invalid token' });  
-    }  
-};  
-
-
-const logger = winston.createLogger({  
-    level: 'info',  
-    format: winston.format.json(),  
-    transports: [  
-        new winston.transports.Console(),  
-        new winston.transports.File({ filename: 'error.log', level: 'error' })  
-    ]  
 });  
 
-
-app.post('/api/users/register', [  
-    body('name').notEmpty().withMessage('Name is required'),  
-    body('email').isEmail().withMessage('Invalid email address'),  
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),  
-    body('phone_number').isMobilePhone().withMessage('Invalid phone number')  
-], async (req, res) => {  
-    const errors = validationResult(req);  
-    if (!errors.isEmpty()) {  
-        return res.status(400).json({ errors: errors.array() });  
+// Authentication Middleware  
+const authenticateUser = async (req, res, next) => {  
+    const { email, password } = req.body;  
+    try {  
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);  
+        if (users.length === 0) {  
+            return res.status(401).json({ message: 'Invalid credentials' });  
+        }  
+        const user = users[0];  
+        const isValid = await bcrypt.compare(password, user.password_hash);  
+        if (!isValid) {  
+            return res.status(401).json({ message: 'Invalid credentials' });  
+        }  
+        req.user = user;  
+        next();  
+    } catch (error) {  
+        res.status(500).json({ message: 'Authentication error' });  
     }  
+};  
 
+// 1. Register User  
+app.post('/api/users/register', async (req, res) => {  
     try {  
         const { name, email, password, phone_number } = req.body;  
         const [existing] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);  
@@ -97,11 +68,9 @@ app.post('/api/users/register', [
 // 2. Login User  
 app.post('/api/users/login', authenticateUser, (req, res) => {  
     const { password_hash, ...user } = req.user;  
-    const token = generateToken(user);  
     res.json({  
         message: 'Login successful',  
-        user,  
-        token  
+        user  
     });  
 });  
 
@@ -160,11 +129,11 @@ app.delete('/api/products/:id', authenticateUser, async (req, res) => {
 });  
 
 // 7. Get Cart  
-app.get('/api/cart', verifyToken, async (req, res) => {  
+app.get('/api/cart', authenticateUser, async (req, res) => {  
     try {  
         const [cartItems] = await pool.query(  
             'SELECT ci.*, p.name, p.price FROM cart_items ci JOIN products p ON ci.product_id = p.product_id WHERE ci.cart_id IN (SELECT cart_id FROM carts WHERE user_id = ?)',  
-            [req.user.userId]  
+            [req.user.user_id]  
         );  
         res.json(cartItems);  
     } catch (error) {  
