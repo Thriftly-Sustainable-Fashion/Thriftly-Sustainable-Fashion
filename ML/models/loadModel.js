@@ -1,12 +1,11 @@
 const express = require('express');  
 const tf = require('@tensorflow/tfjs-node');  
+const mysql = require('mysql2/promise');  
 const path = require('path');  
 const cors = require('cors');  
 const winston = require('winston');  
-
-// Initialize Express app  
-const app = express();  
-const PORT = process.env.PORT || 8080;  
+require('dotenv').config();  
+const PORT = process.env.PORT || 8080;
 
 // Middleware  
 app.use(cors());  
@@ -14,10 +13,7 @@ app.use(express.json());
 
 // Winston Logger Configuration  
 const logger = winston.createLogger({  
-    level: 'info',  
-    format: winston.format.combine(  
-        winston.format.timestamp(),  
-        winston.format.json()  
+const logger = winston.createLogger({
     ),  
     transports: [  
         new winston.transports.Console(),  
@@ -25,17 +21,20 @@ const logger = winston.createLogger({
     ]  
 });  
 
+pool.getConnection()
+        logger.error('Database connection failed:', error);  
+        process.exit(1);  
+    });  
+
 // Global variable to store the loaded model  
 let model;  
 
 // Function to load the model  
 const loadModel = async () => {  
     try {  
-        // Update the model path to the correct location  
-        const modelPath = 'file://' + path.join(__dirname, '../models/tfjs_collaborative_filtering_model/model.json');
+        const modelPath = 'file://' + path.join(__dirname, 'tfjs_collaborative_filtering_model/model.json');  
         logger.info(`Attempting to load model from: ${modelPath}`);  
 
-        // Load the model from the specified path  
         model = await tf.loadLayersModel(modelPath);  
         logger.info('Model loaded successfully');  
         return true;  
@@ -54,8 +53,8 @@ app.get('/', (req, res) => {
     });  
 });  
 
-// Endpoint for getting recommendations  
-app.post('/recommendations', async (req, res) => {  
+// Get product recommendations  
+app.post('/api/recommendations', async (req, res) => {  
     try {  
         const { userId, numRecommendations = 5 } = req.body;  
 
@@ -65,25 +64,48 @@ app.post('/recommendations', async (req, res) => {
             });  
         }  
 
+        // Get user's purchase history  
+        const [userHistory] = await pool.query(  
+            `SELECT DISTINCT product_id   
+             FROM order_items oi   
+             JOIN orders o ON oi.order_id = o.order_id   
+             WHERE o.user_id = ?`,  
+            [userId]  
+        );  
         // Convert userId to tensor  
         const inputTensor = tf.tensor2d([[userId]]);  
-
         // Get predictions from the model  
         const predictions = model.predict(inputTensor);  
         const predictionArray = await predictions.array();  
-
         // Clean up tensors  
         inputTensor.dispose();  
         predictions.dispose();  
-
-        // Process predictions and return top N recommendations  
+        // Process predictions and filter out already purchased products  
+        const purchasedProductIds = new Set(userHistory.map(h => h.product_id));  
         const recommendations = predictionArray[0]  
             .map((score, index) => ({ productId: index, score }))  
+            .filter(rec => !purchasedProductIds.has(rec.productId))  
             .sort((a, b) => b.score - a.score)  
             .slice(0, numRecommendations);  
+        // Get product details for recommendations  
+        const productIds = recommendations.map(r => r.productId);  
+        if (productIds.length > 0) {  
+            const [products] = await pool.query(  
+                'SELECT * FROM products WHERE product_id IN (?)',  
+                [productIds]  
+            );  
 
-        logger.info(`Generated recommendations for user ${userId}`);  
-        res.json({ recommendations });  
+            // Combine predictions with product details  
+            const fullRecommendations = recommendations.map(rec => ({  
+                ...rec,  
+                product: products.find(p => p.product_id === rec.productId)  
+            }));  
+
+            logger.info(`Generated recommendations for user ${userId}`);  
+            res.json({ recommendations: fullRecommendations });  
+        } else {  
+            res.json({ recommendations: [] });  
+        }  
 
     } catch (error) {  
         logger.error('Error generating recommendations:', error);  
