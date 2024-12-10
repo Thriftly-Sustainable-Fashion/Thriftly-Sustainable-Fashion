@@ -11,19 +11,21 @@ steps:
     args: ['push', 'gcr.io/$PROJECT_ID/thriftly-backend']  
 
   # Step 2: Deploy to Google Cloud Run  
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'  
-    entrypoint: gcloud  
-    args:  
-      - 'run'  
-      - 'deploy'  
-      - 'thriftly-backend'  
-      - '--image'  
-      - 'gcr.io/$PROJECT_ID/thriftly-backend'  
-      - '--platform'  
-      - 'managed'  
-      - '--region'  
-      - 'us-central1'  
-      - '--allow-unauthenticated'  
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'  
+    entrypoint: gcloud  
+    args:  
+      - 'run'  
+      - 'deploy'  
+      - 'thriftly-backend'  
+      - '--image'  
+      - 'gcr.io/$PROJECT_ID/thriftly-backend'  
+      - '--platform'  
+      - 'managed'  
+      - '--region'  
+      - 'us-central1'  
+      - '--allow-unauthenticated'  
+      - '--set-env-vars'  
+      - 'DB_HOST=${_DB_HOST},DB_USER=${_DB_USER},DB_PASSWORD=${_DB_PASSWORD},DB_NAME=${_DB_NAME}'  
 
 images:  
   - 'gcr.io/$PROJECT_ID/thriftly-backend'  
