@@ -4,9 +4,8 @@ options:
 steps:  
   # Build  
   - name: 'gcr.io/cloud-builders/docker'  
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/thriftly-ml', '.']  
-    dir: 'ML/models'  
-
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/thriftly-backend', '-f', 'thriftly-backend/Dockerfile', 'thriftly-backend']  
+    
   # Push  
   - name: 'gcr.io/cloud-builders/docker'  
     args: ['push', 'gcr.io/$PROJECT_ID/thriftly-ml']  
