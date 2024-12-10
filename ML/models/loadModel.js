@@ -32,7 +32,7 @@ let model;
 const loadModel = async () => {  
     try {  
         // Update the model path to the correct location  
-        const modelPath = 'file://' + path.join(__dirname, 'models/tfjs_collaborative_filtering_model/model.json');  
+        const modelPath = 'file://' + path.join(__dirname, '../models/tfjs_collaborative_filtering_model/model.json');
         logger.info(`Attempting to load model from: ${modelPath}`);  
 
         // Load the model from the specified path  
