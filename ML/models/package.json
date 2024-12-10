@@ -1,0 +1,39 @@
+{  
+  "name": "thriftly-ml-service",  
+  "version": "1.0.0",  
+  "description": "Machine Learning Service for Thriftly Sustainable Fashion",  
+  "main": "loadModel.js",  
+  "scripts": {  
+    "start": "node loadModel.js",  
+    "dev": "nodemon loadModel.js",  
+    "test": "jest"  
+  },  
+  "dependencies": {  
+    "@tensorflow/tfjs-node": "^4.17.0",  
+    "express": "^4.18.2",  
+    "cors": "^2.8.5",  
+    "winston": "^3.11.0",  
+    "dotenv": "^16.3.1"  
+  },  
+  "devDependencies": {  
+    "jest": "^29.7.0",  
+    "nodemon": "^3.0.2",  
+    "supertest": "^6.3.3"  
+  },  
+  "engines": {  
+    "node": ">=18.0.0"  
+  },  
+  "repository": {  
+    "type": "git",  
+    "url": "https://github.com/Thriftly-Sustainable-Fashion/ML/models"  
+  },  
+  "keywords": [  
+    "machine-learning",  
+    "tensorflow",  
+    "recommendation-system",  
+    "sustainable-fashion",  
+    "thriftly"  
+  ],  
+  "author": "Thriftly Team",  
+  "license": "MIT"  
+}  
