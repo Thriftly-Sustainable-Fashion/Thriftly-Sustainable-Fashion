@@ -1,36 +1,20 @@
-# Use Node.js 18 slim image  
-FROM node:18-slim  
+# Use Node.js 18 image
+FROM node:18
 
-# Install required system dependencies  
-RUN apt-get update && apt-get install -y \  
-    python3 \  
-    build-essential \  
-    && rm -rf /var/lib/apt/lists/*  
+# Set working directory
+WORKDIR /usr/src/app
 
-# Set working directory  
-WORKDIR /app  
+# Copy package files
+COPY package*.json ./
 
-# Copy package files  
-COPY package*.json ./  
+# Install dependencies
+RUN npm install
 
-# Install dependencies  
-RUN npm ci --only=production  
+# Copy application code
+COPY . .
 
-# Copy application files  
-COPY . .  
+# Expose port
+EXPOSE 8080
 
-# Create directory for logs  
-RUN mkdir -p /app/logs  
-
-# Set permissions  
-RUN chmod -R 755 /app  
-
-# Expose port  
-EXPOSE 8080  
-
-# Healthcheck  
-HEALTHCHECK --interval=30s --timeout=3s \  
-    CMD curl -f http://localhost:8080/health || exit 1  
-
-# Start application  
-CMD ["node", "loadModel.js"]  
+# Start application
+CMD ["npm", "start"]
