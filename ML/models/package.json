@@ -1,9 +1,9 @@
 {  
   "name": "thriftly-recommendation-api",
   "version": "1.0.0",
-  "main": "loadModel.js",
+  "main": "index.js",
   "scripts": {  
-    "start": "node loadModel.js"  
+    "start": "node index.js"  
   },
   "dependencies": {  
     "@tensorflow/tfjs-node": "^4.17.0",
