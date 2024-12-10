@@ -5,7 +5,7 @@ FROM node:18
 WORKDIR /usr/src/app  
 
 # Copy package.json and package-lock.json to the working directory  
-COPY ML/package*.json ./  
+COPY package*.json ./  
 
 # Install dependencies  
 RUN npm install  
