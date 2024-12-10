@@ -1,31 +1,31 @@
 options:  
-  logging: CLOUD_LOGGING_ONLY  
+  logging: CLOUD_LOGGING_ONLY  
 
 steps:  
-  # Step 0: Build Docker image for ML model  
-  - name: 'gcr.io/cloud-builders/docker'  
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/thriftly-ml', '-f', 'ML/Dockerfile', 'ML/']  
+  # Step 0: Build Docker image for ML model  
+  - name: 'gcr.io/cloud-builders/docker'  
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/thriftly-ml:$COMMIT_SHA', '-f', 'ML/Dockerfile', 'ML/']  
 
-  # Step 1: Push Docker image to Google Container Registry  
-  - name: 'gcr.io/cloud-builders/docker'  
-    args: ['push', 'gcr.io/$PROJECT_ID/thriftly-ml']  
+  # Step 1: Push Docker image to Google Container Registry  
+  - name: 'gcr.io/cloud-builders/docker'  
+    args: ['push', 'gcr.io/$PROJECT_ID/thriftly-ml:$COMMIT_SHA']  
 
-  # Step 2: Deploy to Google Cloud Run  
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'  
-    entrypoint: gcloud  
-    args:  
-      - 'run'  
-      - 'deploy'  
-      - 'thriftly-ml'  
-      - '--image'  
-      - 'gcr.io/$PROJECT_ID/thriftly-ml'  
-      - '--platform'  
-      - 'managed'  
-      - '--region'  
-      - 'us-central1'  
-      - '--allow-unauthenticated'  
+  # Step 2: Deploy to Google Cloud Run  
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'  
+    entrypoint: gcloud  
+    args:  
+      - 'run'  
+      - 'deploy'  
+      - 'thriftly-ml'  
+      - '--image'  
+      - 'gcr.io/$PROJECT_ID/thriftly-ml:$COMMIT_SHA'  
+      - '--platform'  
+      - 'managed'  
+      - '--region'  
+      - 'asia-southeast2'  
+      - '--allow-unauthenticated'  
       - '--set-env-vars'  
       - 'DB_HOST=${_DB_HOST},DB_USER=${_DB_USER},DB_PASSWORD=${_DB_PASSWORD},DB_NAME=${_DB_NAME}'  
 
 images:  
-  - 'gcr.io/$PROJECT_ID/thriftly-ml'  
+  - 'gcr.io/$PROJECT_ID/thriftly-ml:$COMMIT_SHA'  
