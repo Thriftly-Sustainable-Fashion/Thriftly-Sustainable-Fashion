@@ -38,7 +38,7 @@ async function loadModel() {
 loadModel();  
   
 // Prediction endpoint  
-app.post('/predict', async (req, res) => {  
+app.post('/api/predict', async (req, res) => {  
     try {  
         const { userId, productId } = req.body;  
   
@@ -83,7 +83,7 @@ app.post('/predict', async (req, res) => {
 });  
   
 // Get recommendations for user  
-app.get('/recommendations/:userId', async (req, res) => {  
+app.get('/api/recommendations/:userId', async (req, res) => {  
     try {  
         const userId = parseInt(req.params.userId);  
           
@@ -125,7 +125,7 @@ app.get('/recommendations/:userId', async (req, res) => {
 });  
   
 // Batch prediction endpoint  
-app.post('/predict-batch', async (req, res) => {  
+app.post('/api/predict-batch', async (req, res) => {  
     try {  
         const { userIds, productIds } = req.body;  
   
@@ -185,7 +185,7 @@ app.post('/predict-batch', async (req, res) => {
 });  
   
 // Health check endpoint  
-app.get('/health', (req, res) => {  
+app.get('/api/health', (req, res) => {  
     res.json({   
         status: 'healthy',  
         modelLoaded: model !== undefined  
