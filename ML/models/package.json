@@ -22,18 +22,5 @@
   },  
   "engines": {  
     "node": ">=18.0.0"  
-  },  
-  "repository": {  
-    "type": "git",  
-    "url": "https://github.com/Thriftly-Sustainable-Fashion/ML/models"  
-  },  
-  "keywords": [  
-    "machine-learning",  
-    "tensorflow",  
-    "recommendation-system",  
-    "sustainable-fashion",  
-    "thriftly"  
-  ],  
-  "author": "Thriftly Team",  
-  "license": "MIT"  
+  }  
 }  
