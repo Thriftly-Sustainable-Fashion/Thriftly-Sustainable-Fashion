@@ -1,20 +1,25 @@
-# Use the official Node.js image as the base image  
-FROM node:18  
+# Use Node.js TensorFlow image  
+FROM tensorflow/tensorflow:latest-jupyter  
 
-# Set the working directory inside the container  
+# Install Node.js  
+RUN apt-get update && apt-get install -y curl  
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -  
+RUN apt-get install -y nodejs  
+
+# Set working directory  
 WORKDIR /usr/src/app  
 
-# Copy package.json and package-lock.json to the working directory  
+# Copy package files  
 COPY package*.json ./  
 
 # Install dependencies  
 RUN npm install  
 
-# Copy the rest of the application code to the working directory  
+# Copy application files  
 COPY . .  
 
-# Expose the port the app runs on  
+# Expose port  
 EXPOSE 8080  
 
-# Start the application  
-CMD ["npm", "start"]  
+# Start application  
+CMD ["node", "loadModel.js"]  
