@@ -10,11 +10,11 @@ COPY package*.json ./
 # Install dependencies  
 RUN npm install  
 
-# Copy the entire models directory  
+# Copy the rest of the application code to the working directory  
 COPY . .  
 
 # Expose the port the app runs on  
 EXPOSE 8080  
 
 # Start the application  
-CMD ["node", "loadModel.js"]  
+CMD ["npm", "start"]  
