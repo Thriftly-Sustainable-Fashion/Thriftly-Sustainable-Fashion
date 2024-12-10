@@ -31,8 +31,11 @@ let model;
 // Function to load the model  
 const loadModel = async () => {  
     try {  
+        // Update the model path to the correct location  
+        const modelPath = 'file://' + path.join(__dirname, 'models/tfjs_collaborative_filtering_model/model.json');  
+        logger.info(`Attempting to load model from: ${modelPath}`);  
+
         // Load the model from the specified path  
-        const modelPath = 'file://' + path.join(__dirname, 'models/model.json');  
         model = await tf.loadLayersModel(modelPath);  
         logger.info('Model loaded successfully');  
         return true;  
