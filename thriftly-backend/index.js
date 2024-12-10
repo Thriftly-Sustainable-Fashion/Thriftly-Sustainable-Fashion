@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');  
 const winston = require('winston');  
 require('dotenv').config();  
-@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
 // Middleware  
 app.use(cors());  
@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 // Winston Logger Configuration  
 const logger = winston.createLogger({  
-@@ -23,7 +23,7 @@ const logger = winston.createLogger({
+const logger = winston.createLogger({
     ),  
     transports: [  
         new winston.transports.Console(),  
@@ -21,7 +21,7 @@ const logger = winston.createLogger({
     ]  
 });  
 
-@@ -51,506 +51,128 @@ pool.getConnection()
+pool.getConnection()
         logger.error('Database connection failed:', error);  
         process.exit(1);  
     });  
