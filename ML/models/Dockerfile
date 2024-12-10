@@ -1,20 +1,36 @@
-# Use the official Node.js image as the base image  
-FROM node:18  
+# Use Node.js 18 slim image  
+FROM node:18-slim  
 
-# Set the working directory inside the container  
-WORKDIR /usr/src/app  
+# Install required system dependencies  
+RUN apt-get update && apt-get install -y \  
+    python3 \  
+    build-essential \  
+    && rm -rf /var/lib/apt/lists/*  
 
-# Copy package.json and package-lock.json to the working directory  
+# Set working directory  
+WORKDIR /app  
+
+# Copy package files  
 COPY package*.json ./  
 
 # Install dependencies  
-RUN npm install  
+RUN npm ci --only=production  
 
-# Copy the rest of the application code to the working directory  
+# Copy application files  
 COPY . .  
 
-# Expose the port the app runs on  
+# Create directory for logs  
+RUN mkdir -p /app/logs  
+
+# Set permissions  
+RUN chmod -R 755 /app  
+
+# Expose port  
 EXPOSE 8080  
 
-# Start the application  
+# Healthcheck  
+HEALTHCHECK --interval=30s --timeout=3s \  
+    CMD curl -f http://localhost:8080/health || exit 1  
+
+# Start application  
 CMD ["node", "loadModel.js"]  
