@@ -4,8 +4,7 @@ options:
 steps:  
   # Step 0: Build Docker image for ML model  
   - name: 'gcr.io/cloud-builders/docker'  
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/thriftly-ml', '-f', 'ML/models/Dockerfile', 'ML/models']  
-
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/thriftly-ml', '.']  
   # Step 1: Push Docker image to Google Container Registry  
   - name: 'gcr.io/cloud-builders/docker'  
     args: ['push', 'gcr.io/$PROJECT_ID/thriftly-ml']  
