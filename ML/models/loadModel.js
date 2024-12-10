@@ -117,18 +117,16 @@ const loadModel = async () => {
 };  
 
 // Health check endpoint  
-app.get('/health', (req, res) => {  
-    res.status(200).json({  
-        status: 'healthy',  
-        timestamp: new Date().toISOString(),  
-        service: 'thriftly-ml-model',  
-        modelLoaded: !!model,  
-        uptime: process.uptime()  
-    });  
-});  
+app.get('/', (req, res) => {  
+  res.status(200).json({  
+    status: 'healthy',  
+    timestamp: new Date().toISOString(),  
+    service: 'thriftly-ml'  
+  });  
+}); 
 
 // Get product recommendations  
-app.post('/api/recommendations', async (req, res) => {  
+app.post('/api/predict', async (req, res) => {  
     const startTime = Date.now();  
     try {  
         const { userId, numRecommendations = 5 } = req.body;  
