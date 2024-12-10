@@ -17,50 +17,74 @@ app.use(bodyParser.json());
 
 // Winston Logger Configuration  
 const logger = winston.createLogger({  
-    level: 'info',  
-    format: winston.format.combine(  
-        winston.format.timestamp(),  
-        winston.format.json()  
-    ),  
-    transports: [  
-        new winston.transports.Console(),  
-        new winston.transports.File({ filename: 'app.log' })  
-    ]  
+    level: 'info',  
+    format: winston.format.combine(  
+        winston.format.timestamp(),  
+        winston.format.json()  
+    ),  
+    transports: [  
+        new winston.transports.Console(),  
+        new winston.transports.File({ filename: 'app.log' })  
+    ]  
 });  
 
-// Database Connection Pool  
-const pool = mysql.createPool({  
-    host: process.env.DB_HOST || '34.101.195.146',  
-    user: process.env.DB_USER || 'root',  
-    password: process.env.DB_PASSWORD || 'kimochi:)-!@#',  
-    database: process.env.DB_NAME || 'thriftly-mysql-db',  
-    waitForConnections: true,  
-    connectionLimit: 10,  
-    queueLimit: 0  
+// Database Configuration  
+const dbConfig = {  
+    host: process.env.DB_HOST || '34.101.195.146',  
+    user: process.env.DB_USER || 'root',  
+    password: process.env.DB_PASSWORD || 'kimochi:)-!@#',  
+    database: process.env.DB_NAME || 'thriftly-mysql-db',  
+    waitForConnections: true,  
+    connectionLimit: 10,  
+    queueLimit: 0  
+};  
+
+// Create Database Pool  
+const pool = mysql.createPool(dbConfig);  
+
+// Test Database Connection  
+pool.getConnection()  
+    .then(connection => {  
+        logger.info('Database connected successfully');  
+        connection.release();  
+    })  
+    .catch(error => {  
+        logger.error('Database connection failed:', error);  
+        process.exit(1);  
+    });  
+
+// Basic Health Check  
+app.get('/', (req, res) => {  
+    res.status(200).json({   
+        status: 'healthy',  
+        timestamp: new Date(),  
+        service: 'thriftly-backend'  
+    });  
 });  
 
 // Authentication Middleware  
 const authenticateUser = async (req, res, next) => {  
-    const { email, password } = req.body;  
-    try {  
-        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);  
-        if (users.length === 0) {  
-            logger.warn('Invalid login attempt: User not found');  
-            return res.status(401).json({ message: 'Invalid credentials' });  
-        }  
-        const user = users[0];  
-        const isValid = await bcrypt.compare(password, user.password_hash);  
-        if (!isValid) {  
-            logger.warn('Invalid login attempt: Incorrect password');  
-            return res.status(401).json({ message: 'Invalid credentials' });  
-        }  
-        req.user = user;  
-        next();  
-    } catch (error) {  
-        logger.error('Authentication error:', error);  
-        res.status(500).json({ message: 'Authentication error' });  
-    }  
+    const { email, password } = req.body;  
+    try {  
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);  
+        if (users.length === 0) {  
+            logger.warn('Invalid login attempt: User not found');  
+            return res.status(401).json({ message: 'Invalid credentials' });  
+        }  
+        const user = users[0];  
+        const isValid = await bcrypt.compare(password, user.password_hash);  
+        if (!isValid) {  
+            logger.warn('Invalid login attempt: Incorrect password');  
+            return res.status(401).json({ message: 'Invalid credentials' });  
+        }  
+        req.user = user;  
+        next();  
+    } catch (error) {  
+        logger.error('Authentication error:', error);  
+        res.status(500).json({ message: 'Authentication error' });  
+    }  
 };  
+
 
 // Routes  
 
