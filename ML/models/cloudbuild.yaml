@@ -23,13 +23,20 @@ steps:
       - '--platform'  
       - 'managed'  
       - '--region'  
-      - 'asia-southeast2'  # Ganti ke region terdekat  
+      - 'asia-southeast2'  
       - '--allow-unauthenticated'  
+      - '--memory'  
+      - '2Gi'  
+      - '--cpu'  
+      - '1'  
       - '--set-env-vars'  
-      - 'DB_HOST=${_DB_HOST},DB_USER=${_DB_USER},DB_PASSWORD=${_DB_PASSWORD},DB_NAME=${_DB_NAME}'  
+      - 'NODE_ENV=production,DB_HOST=${_DB_HOST},DB_USER=${_DB_USER},DB_PASSWORD=${_DB_PASSWORD},DB_NAME=${_DB_NAME}'  
 
 substitutions:  
   _DB_HOST: '34.101.195.146'  
   _DB_USER: 'root'  
   _DB_NAME: 'thriftly-mysql-db'  
-  _DB_PASSWORD: 'kimochi:)-!@#'  
+  _DB_PASSWORD: 'kimochi:)-!@#' 
+
+images:  
+  - 'gcr.io/$PROJECT_ID/thriftly-ml'  
