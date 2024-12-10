@@ -2,14 +2,19 @@
   "name": "thriftly-ml-service",  
   "version": "1.0.0",  
   "scripts": {  
-    "start": "node loadModel.js"  
+    "start": "node loadModel.js",  
+    "dev": "nodemon loadModel.js"  
   },  
   "dependencies": {  
     "@tensorflow/tfjs-node": "^4.17.0",  
-    "express": "^4.18.2",  
+    "express": "^4.21.2",  
     "mysql2": "^3.11.5",  
     "cors": "^2.8.5",  
     "dotenv": "^16.4.7",  
-    "winston": "^3.11.0"  
+    "winston": "^3.11.0",  
+    "body-parser": "^1.20.3"  
+  },  
+  "engines": {  
+    "node": ">=18"  
   }  
 }  
