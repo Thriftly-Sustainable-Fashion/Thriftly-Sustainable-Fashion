@@ -5,7 +5,10 @@ const path = require('path');
 const cors = require('cors');  
 const winston = require('winston');  
 require('dotenv').config();  
-const PORT = process.env.PORT || 8080;
+
+// Initialize Express app  
+const app = express();  
+const PORT = process.env.PORT || 8080;  
 
 // Middleware  
 app.use(cors());  
@@ -13,7 +16,10 @@ app.use(express.json());
 
 // Winston Logger Configuration  
 const logger = winston.createLogger({  
-const logger = winston.createLogger({
+    level: 'info',  
+    format: winston.format.combine(  
+        winston.format.timestamp(),  
+        winston.format.json()  
     ),  
     transports: [  
         new winston.transports.Console(),  
@@ -21,7 +27,27 @@ const logger = winston.createLogger({
     ]  
 });  
 
-pool.getConnection()
+// Database Configuration  
+const dbConfig = {  
+    host: process.env.DB_HOST || '34.101.195.146',  
+    user: process.env.DB_USER || 'root',  
+    password: process.env.DB_PASSWORD || 'kimochi:)-!@#',  
+    database: process.env.DB_NAME || 'thriftly-mysql-db',  
+    waitForConnections: true,  
+    connectionLimit: 10,  
+    queueLimit: 0  
+};  
+
+// Create Database Pool  
+const pool = mysql.createPool(dbConfig);  
+
+// Test Database Connection  
+pool.getConnection()  
+    .then(connection => {  
+        logger.info('Database connected successfully');  
+        connection.release();  
+    })  
+    .catch(error => {  
         logger.error('Database connection failed:', error);  
         process.exit(1);  
     });  
@@ -72,14 +98,18 @@ app.post('/api/recommendations', async (req, res) => {
              WHERE o.user_id = ?`,  
             [userId]  
         );  
+
         // Convert userId to tensor  
         const inputTensor = tf.tensor2d([[userId]]);  
+
         // Get predictions from the model  
         const predictions = model.predict(inputTensor);  
         const predictionArray = await predictions.array();  
+
         // Clean up tensors  
         inputTensor.dispose();  
         predictions.dispose();  
+
         // Process predictions and filter out already purchased products  
         const purchasedProductIds = new Set(userHistory.map(h => h.product_id));  
         const recommendations = predictionArray[0]  
@@ -87,6 +117,7 @@ app.post('/api/recommendations', async (req, res) => {
             .filter(rec => !purchasedProductIds.has(rec.productId))  
             .sort((a, b) => b.score - a.score)  
             .slice(0, numRecommendations);  
+
         // Get product details for recommendations  
         const productIds = recommendations.map(r => r.productId);  
         if (productIds.length > 0) {  
