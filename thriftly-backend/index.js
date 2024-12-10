@@ -5,7 +5,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');  
 const winston = require('winston');  
 require('dotenv').config();  
-const PORT = process.env.PORT || 8080;
+
+// Initialize Express app  
+const app = express();  
+const PORT = process.env.PORT || 8080;  
 
 // Middleware  
 app.use(cors());  
@@ -13,7 +16,10 @@ app.use(bodyParser.json());
 
 // Winston Logger Configuration  
 const logger = winston.createLogger({  
-const logger = winston.createLogger({
+    level: 'info',  
+    format: winston.format.combine(  
+        winston.format.timestamp(),  
+        winston.format.json()  
     ),  
     transports: [  
         new winston.transports.Console(),  
@@ -21,7 +27,27 @@ const logger = winston.createLogger({
     ]  
 });  
 
-pool.getConnection()
+// Database Configuration  
+const dbConfig = {  
+    host: process.env.DB_HOST || '34.101.195.146',  
+    user: process.env.DB_USER || 'root',  
+    password: process.env.DB_PASSWORD || 'kimochi:)-!@#',  
+    database: process.env.DB_NAME || 'thriftly-mysql-db',  
+    waitForConnections: true,  
+    connectionLimit: 10,  
+    queueLimit: 0  
+};  
+
+// Create Database Pool  
+const pool = mysql.createPool(dbConfig);  
+
+// Test Database Connection  
+pool.getConnection()  
+    .then(connection => {  
+        logger.info('Database connected successfully');  
+        connection.release();  
+    })  
+    .catch(error => {  
         logger.error('Database connection failed:', error);  
         process.exit(1);  
     });  
@@ -57,7 +83,9 @@ const authenticateUser = async (req, res, next) => {
     }  
 };  
 
+
 // Routes  
+
 // 1. Register User  
 app.post('/api/users/register', async (req, res) => {  
     try {  
@@ -92,6 +120,7 @@ app.post('/api/users/login', authenticateUser, (req, res) => {
         user  
     });  
 });  
+
 // 3. Get Product by ID  
 app.get('/api/products/:id', async (req, res) => {  
     try {  
@@ -106,6 +135,7 @@ app.get('/api/products/:id', async (req, res) => {
         res.status(500).json({ message: 'Error fetching product' });  
     }  
 });  
+
 // 4. Create Product  
 app.post('/api/products', authenticateUser, async (req, res) => {  
     try {  
@@ -124,6 +154,8 @@ app.post('/api/products', authenticateUser, async (req, res) => {
         res.status(500).json({ message: 'Error creating product' });  
     }  
 });  
+
+
 // 5. Update Product  
 app.put('/api/products/:id', authenticateUser, async (req, res) => {  
     try {  
@@ -143,14 +175,17 @@ app.put('/api/products/:id', authenticateUser, async (req, res) => {
         res.status(500).json({ message: 'Error updating product' });  
     }  
 });  
+
 // 6. Add to Cart  
 app.post('/api/cart', authenticateUser, async (req, res) => {  
     try {  
         const { product_id, quantity } = req.body;  
         const user_id = req.user.user_id;  
+
         // Check if user has an active cart  
         let [cart] = await pool.query('SELECT * FROM carts WHERE user_id = ?', [user_id]);  
         let cart_id;  
+
         if (cart.length === 0) {  
             // Create new cart  
             const [newCart] = await pool.query('INSERT INTO carts (user_id) VALUES (?)', [user_id]);  
@@ -158,6 +193,7 @@ app.post('/api/cart', authenticateUser, async (req, res) => {
         } else {  
             cart_id = cart[0].cart_id;  
         }  
+
         // Add item to cart  
         await pool.query(  
             'INSERT INTO cart_items (cart_id, product_id, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)',  
@@ -177,6 +213,7 @@ app.post('/api/orders', authenticateUser, async (req, res) => {
     try {  
         const { store_id, items } = req.body;  
         const user_id = req.user.user_id;  
+
         // Calculate total price  
         let total_price = 0;  
         for (const item of items) {  
@@ -189,6 +226,7 @@ app.post('/api/orders', authenticateUser, async (req, res) => {
             'INSERT INTO orders (user_id, store_id, total_price) VALUES (?, ?, ?)',  
             [user_id, store_id, total_price]  
         );  
+
         // Add order items  
         for (const item of items) {  
             await pool.query(  
@@ -207,6 +245,7 @@ app.post('/api/orders', authenticateUser, async (req, res) => {
         res.status(500).json({ message: 'Error creating order' });  
     }  
 });  
+
 // 8. Get User Orders  
 app.get('/api/orders', authenticateUser, async (req, res) => {  
     try {  
@@ -223,15 +262,18 @@ app.get('/api/orders', authenticateUser, async (req, res) => {
         res.status(500).json({ message: 'Error fetching orders' });  
     }  
 });  
+
 // 9. Create Store  
 app.post('/api/stores', authenticateUser, async (req, res) => {  
     try {  
         const { name, description, address } = req.body;  
         const owner_id = req.user.user_id;  
+
         const [result] = await pool.query(  
             'INSERT INTO stores (owner_id, name, description, address) VALUES (?, ?, ?, ?)',  
             [owner_id, name, description, address]  
         );  
+
         logger.info('Store created successfully:', { storeId: result.insertId });  
         res.status(201).json({  
             message: 'Store created successfully',  
@@ -263,19 +305,23 @@ app.put('/api/stores/:id', authenticateUser, async (req, res) => {
         res.status(500).json({ message: 'Error updating store' });  
     }  
 });  
+
 // 11. Create Review  
 app.post('/api/reviews', authenticateUser, async (req, res) => {  
     try {  
         const { store_id, rating, comment } = req.body;  
         const user_id = req.user.user_id;  
+
         // Validate rating  
         if (rating < 1 || rating > 5) {  
             return res.status(400).json({ message: 'Rating must be between 1 and 5' });  
         }  
+
         const [result] = await pool.query(  
             'INSERT INTO reviews (store_id, user_id, rating, comment) VALUES (?, ?, ?, ?)',  
             [store_id, user_id, rating, comment]  
         );  
+
         logger.info('Review created successfully:', { reviewId: result.insertId });  
         res.status(201).json({  
             message: 'Review created successfully',  
@@ -286,6 +332,7 @@ app.post('/api/reviews', authenticateUser, async (req, res) => {
         res.status(500).json({ message: 'Error creating review' });  
     }  
 });  
+
 // 12. Get Store Reviews  
 app.get('/api/stores/:storeId/reviews', async (req, res) => {  
     try {  
@@ -303,6 +350,7 @@ app.get('/api/stores/:storeId/reviews', async (req, res) => {
         res.status(500).json({ message: 'Error fetching reviews' });  
     }  
 });  
+
 // 13. Get User Notifications  
 app.get('/api/notifications', authenticateUser, async (req, res) => {  
     try {  
@@ -310,23 +358,27 @@ app.get('/api/notifications', authenticateUser, async (req, res) => {
             'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC',  
             [req.user.user_id]  
         );  
+
         // Mark notifications as read  
         await pool.query(  
             'UPDATE notifications SET status = "read" WHERE user_id = ? AND status = "unread"',  
             [req.user.user_id]  
         );  
+
         res.json(notifications);  
     } catch (error) {  
         logger.error('Error fetching notifications:', error);  
         res.status(500).json({ message: 'Error fetching notifications' });  
     }  
 });  
+
 // 14. Search Products and Stores  
 app.get('/api/search', async (req, res) => {  
     try {  
         const { query, type = 'all', category_id, min_price, max_price } = req.query;  
         let sql = '';  
         let params = [];  
+
         if (type === 'products' || type === 'all') {  
             sql += `  
                 SELECT 'product' as type, p.*, c.name as category_name   
@@ -347,6 +399,7 @@ app.get('/api/search', async (req, res) => {
                 params.push(max_price);  
             }  
         }  
+
         if (type === 'stores' || type === 'all') {  
             if (sql) sql += ' UNION ';  
             sql += `  
@@ -355,9 +408,12 @@ app.get('/api/search', async (req, res) => {
                 WHERE s.name LIKE ? OR s.description LIKE ?  
             `;  
         }  
+
         const searchQuery = `%${query}%`;  
         params = [searchQuery, searchQuery, ...params];  
+
         const [results] = await pool.query(sql, params);  
+
         // Log search query  
         if (req.user) {  
             await pool.query(  
@@ -365,6 +421,7 @@ app.get('/api/search', async (req, res) => {
                 [req.user.user_id, query]  
             );  
         }  
+
         res.json(results);  
     } catch (error) {  
         logger.error('Error performing search:', error);  
@@ -377,10 +434,12 @@ app.post('/api/wishlist', authenticateUser, async (req, res) => {
     try {  
         const { product_id } = req.body;  
         const user_id = req.user.user_id;  
+
         await pool.query(  
             'INSERT INTO wishlist (user_id, product_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE created_at = CURRENT_TIMESTAMP',  
             [user_id, product_id]  
         );  
+
         logger.info('Item added to wishlist:', { userId: user_id, productId: product_id });  
         res.status(201).json({ message: 'Item added to wishlist successfully' });  
     } catch (error) {  
@@ -388,6 +447,7 @@ app.post('/api/wishlist', authenticateUser, async (req, res) => {
         res.status(500).json({ message: 'Error adding to wishlist' });  
     }  
 });  
+
 // 16. Get User's Wishlist  
 app.get('/api/wishlist', authenticateUser, async (req, res) => {  
     try {  
@@ -405,6 +465,7 @@ app.get('/api/wishlist', authenticateUser, async (req, res) => {
         res.status(500).json({ message: 'Error fetching wishlist' });  
     }  
 });  
+
 // 17. Get Categories with Subcategories  
 app.get('/api/categories', async (req, res) => {  
     try {  
@@ -428,11 +489,13 @@ app.get('/api/categories', async (req, res) => {
 app.get('/api/stores/:storeId/analytics', authenticateUser, async (req, res) => {  
     try {  
         const store_id = req.params.storeId;  
+
         // Verify store ownership  
         const [store] = await pool.query(  
             'SELECT * FROM stores WHERE store_id = ? AND owner_id = ?',  
             [store_id, req.user.user_id]  
         );  
+
         if (store.length === 0) {  
             return res.status(403).json({ message: 'Unauthorized access to store analytics' });  
         }  
@@ -447,6 +510,7 @@ app.get('/api/stores/:storeId/analytics', authenticateUser, async (req, res) => 
              WHERE store_id = ?`,  
             [store_id]  
         );  
+
         const [productStats] = await pool.query(  
             `SELECT   
                 COUNT(*) as total_products,  
@@ -456,6 +520,7 @@ app.get('/api/stores/:storeId/analytics', authenticateUser, async (req, res) => 
              WHERE store_id = ?`,  
             [store_id]  
         );  
+
         const [reviewStats] = await pool.query(  
             `SELECT   
                 COUNT(*) as total_reviews,  
@@ -464,6 +529,7 @@ app.get('/api/stores/:storeId/analytics', authenticateUser, async (req, res) => 
              WHERE store_id = ?`,  
             [store_id]  
         );  
+
         res.json({  
             orderStats: orderStats[0],  
             productStats: productStats[0],  
@@ -474,6 +540,8 @@ app.get('/api/stores/:storeId/analytics', authenticateUser, async (req, res) => 
         res.status(500).json({ message: 'Error fetching store analytics' });  
     }  
 });  
+
+
 // Error Handling Middleware  
 app.use((err, req, res, next) => {  
     logger.error('Unhandled error:', err);  
