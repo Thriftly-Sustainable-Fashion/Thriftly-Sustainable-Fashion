@@ -1,5 +1,5 @@
 # Thriftly 
-
+***
 ![thriftly](https://github.com/user-attachments/assets/21e31b46-87d4-497f-9cf3-e661525cf0ce)
 
 
