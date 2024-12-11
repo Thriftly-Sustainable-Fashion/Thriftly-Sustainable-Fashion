@@ -1,6 +1,7 @@
 # Thriftly 
 
-![thriftly](https://github.com/user-attachments/assets/6813ed92-49a2-4c19-828a-81db133a5c59)
+![thriftly](https://github.com/user-attachments/assets/21e31b46-87d4-497f-9cf3-e661525cf0ce)
+
 
 Thrifly exists to reduce fashion waste by creating a platform that empowers thrift store owners to sell preloved clothes while promoting sustainable shopping habits. Our Promise
 
