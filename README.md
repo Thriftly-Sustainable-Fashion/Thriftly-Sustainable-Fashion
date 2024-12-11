@@ -8,7 +8,7 @@ Thrifly promises to make sustainable fashion accessible and convenient, while he
 
 Thrifly helps customers shop responsibly, save money, and find items that express their individuality, all while contributing to a greener planet. For who are we here? For eco-conscious shoppers and thrift store owners, Thrifly is a thrift shopping platform that delivers unique, sustainable, and affordable fashion while addressing fashion waste and empowering small businesses.
 
-# Desgin Aplikasi
+## Desgin Aplikasi
 Thriftly used Figma to create a second-hand online shopping app. The process started with understanding user needs and seeking inspiration from similar apps. Next, the design team created wireframes to determine the layout of each page.
 
 After that, they focused on the UI design by choosing colors, fonts, and images that fit the thrifting theme. This design was made to be easy to use and attractive.  The next stage was to create an interactive prototype to see how the app works as a whole.
