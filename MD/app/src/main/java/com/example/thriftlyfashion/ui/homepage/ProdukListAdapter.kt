@@ -10,12 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.model.Product
+import com.example.thriftlyfashion.remote.model.ProductCard
 import com.example.thriftlyfashion.ui.product.ProductDetailActivity
 
 class ProductListAdapter(
     private val context: Context,
-    private val productList: List<Product>
+    private val productList: List<ProductCard>
 ) : RecyclerView.Adapter<ProductListAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -35,7 +35,7 @@ class ProductListAdapter(
         val product = productList[position]
 
         Glide.with(context)
-            .load(product.images)
+            .load(product.image)
             .placeholder(R.drawable.image)
             .into(holder.productImage)
 
@@ -48,16 +48,6 @@ class ProductListAdapter(
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ProductDetailActivity::class.java).apply {
                 putExtra("PRODUCT_ID", product.productId)
-                putExtra("STORE_ID", product.storeId)
-                putExtra("PRODUCT_NAME", product.name)
-                putExtra("PRODUCT_CATEGORY", product.category)
-                putExtra("PRODUCT_PRICE", product.price)
-                putExtra("PRODUCT_IMAGE", product.images)
-                putExtra("PRODUCT_DESCRIPTION", product.description)
-                putExtra("PRODUCT_COLOR", product.color)
-                putExtra("PRODUCT_SIZE", product.size)
-                putExtra("PRODUCT_QUANTITY", product.quantity)
-                putExtra("PRODUCT_CREATEAT", product.createdAt)
             }
             context.startActivity(intent)
         }

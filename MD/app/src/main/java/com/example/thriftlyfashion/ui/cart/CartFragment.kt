@@ -1,19 +1,29 @@
 package com.example.thriftlyfashion.ui.cart
 
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.database.DatabaseHelper
-import com.example.thriftlyfashion.model.CartItem
+import com.example.thriftlyfashion.remote.SharedPrefManager
+import com.example.thriftlyfashion.remote.api.ApiService
+import com.example.thriftlyfashion.remote.api.RetrofitClient
+import com.example.thriftlyfashion.remote.model.CartItem
 import java.text.NumberFormat
 import java.util.Locale
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CartFragment : Fragment() {
 
@@ -27,6 +37,8 @@ class CartFragment : Fragment() {
     private lateinit var totalSelectedItemsTextView: TextView
     private lateinit var emptyCartTextView: LinearLayout
     private lateinit var cartView: LinearLayout
+    private var cartItems: List<CartItem> = emptyList()
+    val apiService = RetrofitClient.createService(ApiService::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,34 +56,52 @@ class CartFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val dbHelper = DatabaseHelper(requireContext())
-        val cartItems = dbHelper.getAllCartItems().toMutableList()
+        val sharedPrefManager = SharedPrefManager(requireContext())
+        val userId = sharedPrefManager.getUserId()
 
-        productCartAdapter = ProductCartAdapter(requireContext(), cartItems,
-            onDeleteClickListener = { id, position ->
-                val productIdToRemove = cartItems[position].productId
+        Log.d("CartFragment", "Fetching cart items for userId: $userId")
 
-                cartItems.removeAt(position)
-                productCartAdapter.notifyItemRemoved(position)
+        apiService.getCartItems(userId).enqueue(object : Callback<List<CartItem>> {
+            override fun onResponse(call: Call<List<CartItem>>, response: Response<List<CartItem>>) {
+                if (response.isSuccessful) {
+                    cartItems = response.body() ?: emptyList()
+                    Log.d("CartFragment", "API response: $cartItems")
+                    if (cartItems.isEmpty()) {
+                        Toast.makeText(requireContext(), "Keranjang kosong", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Data keranjang berhasil diambil", Toast.LENGTH_SHORT).show()
+                    }
 
-                dbHelper.deleteCartItem(id)
-
-                selectedProducts.removeIf { it.first == productIdToRemove }
-
-                updateCartVisibility(cartItems)
-                calculateTotals()
-            },
-            onCheckBoxClickListener = { productId, totalPrice, isChecked ->
-                if (isChecked) {
-                    selectedProducts.add(Pair(productId, totalPrice))
+                    productCartAdapter = ProductCartAdapter(
+                        requireContext(),
+                        cartItems,
+                        onDeleteClickListener = { id, position ->
+                            deleteCartItem(id, position, cartItems)
+                        },
+                        onCheckBoxClickListener = { productId, totalPrice, isChecked ->
+                            if (isChecked) {
+                                selectedProducts.add(Pair(productId.toString(), totalPrice))
+                            } else {
+                                selectedProducts.removeIf { it.first == productId.toString() }
+                            }
+                            calculateTotals()
+                        }
+                    )
+                    recyclerView.adapter = productCartAdapter
+                    updateCartVisibility(cartItems)
+                    calculateTotals()
                 } else {
-                    selectedProducts.removeIf { it.first == productId }
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("CartFragment", "API error: ${response.code()}, $errorBody")
+                    Toast.makeText(requireContext(), "Gagal mengambil data keranjang", Toast.LENGTH_SHORT).show()
                 }
-                calculateTotals()
             }
-        )
 
-        recyclerView.adapter = productCartAdapter
+            override fun onFailure(call: Call<List<CartItem>>, t: Throwable) {
+                Log.e("CartFragment", "API call failed", t)
+                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         updateCartVisibility(cartItems)
 
@@ -93,6 +123,57 @@ class CartFragment : Fragment() {
         )
     }
 
+
+    private fun deleteCartItem(id: Int, position: Int, cartItems: List<CartItem>) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.custom_dialog_confirmation, null)
+
+        val dialog = AlertDialog.Builder(context)
+            .setView(dialogView)
+            .create()
+
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnConfirm.setOnClickListener {
+            val productIdToRemove = cartItems[position].productId
+
+            apiService.deleteCartItem(id).enqueue(object : Callback<Map<String, String>> {
+                override fun onResponse(
+                    call: Call<Map<String, String>>,
+                    response: Response<Map<String, String>>
+                ) {
+                    if (response.isSuccessful) {
+                        // Remove the item from the local cart list
+                        val updatedCartItems = cartItems.toMutableList()
+                        updatedCartItems.removeAt(position)
+
+                        // Update the adapter with the new cart items list
+                        productCartAdapter.updateCartItems(updatedCartItems)
+                        selectedProducts.removeIf { it.first == productIdToRemove.toString() }
+
+                        updateCartVisibility(updatedCartItems)
+                        calculateTotals()
+
+                        Toast.makeText(context, "Item berhasil dihapus", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    } else {
+                        Toast.makeText(context, "Gagal menghapus item: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
+                    Toast.makeText(context, "Terjadi kesalahan: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+
+        dialog.show()
+    }
+
     private fun calculateTotals() {
         val subtotal = selectedProducts.sumOf { it.second }
         val discount = subtotal * 0.10
@@ -109,6 +190,16 @@ class CartFragment : Fragment() {
         totalPriceTextView.text = ": ${format.format(totalPrice)}"
     }
 
+    private fun updateCartVisibility(cartItems: List<CartItem>) {
+        if (cartItems.isEmpty()) {
+            emptyCartTextView.visibility = View.VISIBLE
+            cartView.visibility = View.GONE
+        } else {
+            emptyCartTextView.visibility = View.GONE
+            cartView.visibility = View.VISIBLE
+        }
+    }
+
     private fun populateRecipientAddress(
         recipientName: String,
         address1: String,
@@ -122,15 +213,4 @@ class CartFragment : Fragment() {
         address1TextView.text = address1
         address2TextView.text = address2
     }
-
-    private fun updateCartVisibility(cartItems: List<CartItem>) {
-        if (cartItems.isEmpty()) {
-            emptyCartTextView.visibility = View.VISIBLE
-            cartView.visibility = View.GONE
-        } else {
-            emptyCartTextView.visibility = View.GONE
-            cartView.visibility = View.VISIBLE
-        }
-    }
-
 }

@@ -2,6 +2,7 @@ package com.example.thriftlyfashion.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -9,11 +10,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.database.DatabaseHelper
+import com.example.thriftlyfashion.remote.SharedPrefManager
+import com.example.thriftlyfashion.remote.api.ApiService
+import com.example.thriftlyfashion.remote.api.RetrofitClient
+import com.example.thriftlyfashion.remote.model.LoginRequest
 import com.example.thriftlyfashion.ui.MainActivity
+import com.example.thriftlyfashion.ui.signup.SignupActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var etUsername: EditText
+    private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
     private lateinit var ivTogglePassword: ImageView
@@ -26,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        etUsername = findViewById(R.id.etUsername)
+        etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
         ivTogglePassword = findViewById(R.id.ivTogglePassword)
@@ -39,13 +48,15 @@ class LoginActivity : AppCompatActivity() {
         tvForgetPassword.setOnClickListener {
             Toast.makeText(this, "Lupa password? Fitur ini belum tersedia.", Toast.LENGTH_SHORT).show()
         }
+
         tvRegister.setOnClickListener {
-            Toast.makeText(this, "Arahkan ke halaman registrasi.", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this@LoginActivity, SignupActivity::class.java)
+            startActivity(intent)
         }
     }
 
     private fun handleLogin() {
-        val email = etUsername.text.toString().trim()
+        val email = etEmail.text.toString().trim()
         val password = etPassword.text.toString().trim()
 
         if (email.isEmpty() || password.isEmpty()) {
@@ -53,15 +64,41 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        val dbHelper = DatabaseHelper(this)
-        val user = dbHelper.getUserByEmail(email)
+        val loginRequest = LoginRequest(email, password)
 
-        if (user != null && user.password == password) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        } else {
-            Toast.makeText(this, "Email atau password salah.", Toast.LENGTH_SHORT).show()
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    val apiService = RetrofitClient.createService(ApiService::class.java)
+                    apiService.login(loginRequest)
+                }
+
+                if (response.isSuccessful && response.body()?.message == "Login successful") {
+                    val token = response.body()?.token
+                    val userId = response.body()?.userId
+                    val sharedPrefManager = SharedPrefManager(this@LoginActivity)
+
+                    token?.let { sharedPrefManager.saveToken(it)}
+                    userId?.let { sharedPrefManager.saveUserId(it)}
+
+                    Log.e("UserId", "id = $userId")
+
+                    Toast.makeText(this@LoginActivity, "Login berhasil!", Toast.LENGTH_SHORT).show()
+
+                    checkTokenStatus()
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        response.body()?.message ?: "Login gagal.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@LoginActivity, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -76,4 +113,16 @@ class LoginActivity : AppCompatActivity() {
         isPasswordVisible = !isPasswordVisible
         etPassword.setSelection(etPassword.text.length)
     }
+
+    private fun checkTokenStatus() {
+        val sharedPrefManager = SharedPrefManager(this)
+        val token = sharedPrefManager.getToken()
+
+        if (token != null) {
+            Toast.makeText(this, "Token berhasil disimpan: $token", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Token tidak tersedia", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }

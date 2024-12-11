@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.database.DatabaseHelper
-import com.example.thriftlyfashion.model.Product
 import com.example.thriftlyfashion.ui.login.LoginActivity
 import com.example.thriftlyfashion.ui.signup.SignupActivity
 

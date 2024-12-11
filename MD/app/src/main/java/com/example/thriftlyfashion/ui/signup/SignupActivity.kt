@@ -10,8 +10,14 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.database.DatabaseHelper
+import com.example.thriftlyfashion.remote.api.ApiService
+import com.example.thriftlyfashion.remote.api.RetrofitClient
+import com.example.thriftlyfashion.remote.model.SignupRequest
 import com.example.thriftlyfashion.ui.login.LoginActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SignupActivity : AppCompatActivity() {
     private var isPasswordVisible = false
@@ -61,6 +67,8 @@ class SignupActivity : AppCompatActivity() {
             val name = etNama.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
+            val confirmPassword = etConfirmPassword.text.toString()
+            val isOwner = false
 
             if (name.isEmpty()) {
                 Log.e("SignupActivity", "Nama tidak boleh kosong!")
@@ -86,17 +94,41 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val dbHelper = DatabaseHelper(this)
-            val result = dbHelper.insertUserAccount(name, email, password)
+            if (confirmPassword.isEmpty()) {
+                Log.e("SignupActivity", "Konfirmasi password tidak boleh kosong!")
+                Toast.makeText(this, "Konfirmasi password tidak boleh kosong!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-            if (result != -1L) {
-                Log.d("SignupActivity", "Akun berhasil dibuat: $email")
-                val intent = Intent(this@SignupActivity, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                Log.e("SignupActivity", "Gagal membuat akun untuk: $email")
-                Toast.makeText(this, "Gagal membuat akun!", Toast.LENGTH_SHORT).show()
+            if (password != confirmPassword) {
+                Log.e("SignupActivity", "Password dan konfirmasi password tidak sama!")
+                Toast.makeText(this, "Password dan konfirmasi password tidak sama!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val signupRequest = SignupRequest(name, email, password, isOwner)
+
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val response = withContext(Dispatchers.IO) {
+                        val apiService = RetrofitClient.createService(ApiService::class.java)
+                        apiService.registerUser(signupRequest)
+                    }
+
+                    if (response.isSuccessful) {
+                        Log.d("SignupActivity", "Akun berhasil dibuat: $email")
+                        Toast.makeText(this@SignupActivity, "Akun berhasil dibuat!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@SignupActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Log.e("SignupActivity", "Gagal membuat akun untuk: $email")
+                        Toast.makeText(this@SignupActivity, "Gagal membuat akun: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("SignupActivity", "Terjadi kesalahan: ${e.message}")
+                    Toast.makeText(this@SignupActivity, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

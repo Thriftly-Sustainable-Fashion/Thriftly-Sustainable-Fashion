@@ -11,13 +11,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.model.CartItem
+import com.example.thriftlyfashion.remote.model.CartItem
 
 class ProductCartAdapter(
     private val context: Context,
-    private val cartItems: List<CartItem>,
+    private var cartItems: List<CartItem>,
     private val onDeleteClickListener: (Int, Int) -> Unit,
-    private val onCheckBoxClickListener: (String, Double, Boolean) -> Unit
+    private val onCheckBoxClickListener: (Int, Double, Boolean) -> Unit
 ) : RecyclerView.Adapter<ProductCartAdapter.CartViewHolder>() {
 
     inner class CartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -30,6 +30,11 @@ class ProductCartAdapter(
         val productImage: ImageView = itemView.findViewById(R.id.id_productImage)
         val deleteButton: ImageView = itemView.findViewById(R.id.id_deleteProduct)
         val checkBox: CheckBox = itemView.findViewById(R.id.id_checkBox)
+    }
+
+    fun updateCartItems(newCartItems: List<CartItem>) {
+        this.cartItems = newCartItems
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {

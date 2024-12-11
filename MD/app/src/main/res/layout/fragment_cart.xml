@@ -50,12 +50,27 @@
             android:id="@+id/id_emptyCart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:text="Kamu Belum Menambahkan Produk Apapun Ke Keranjang" />
+                android:layout_gravity="center_horizontal"
+                android:text="@string/empty_cart"
+                android:textAlignment="center"
+                android:textColor="@color/primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/CD_ic_empty_cart"
+                android:src="@drawable/ic_cart_inactive"
+                app:tint="@color/primary" />
         </LinearLayout>
 
 

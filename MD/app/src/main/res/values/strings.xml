@@ -1,12 +1,11 @@
 <resources>
     <string name="app_name">ThriftlyFashion</string>
-  
+
     <string name="illustration_description">Ilustrasi aplikasi</string>
     <string name="background_image_description">Background illustration</string>
     <string name="hello_text">Hello</string>
     <string name="button_register">Daftar</string>
     <string name="login_title">Login</string>
-    <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
     <string name="forgot_password">Lupa password?</string>
     <string name="login_button">Masuk</string>
@@ -150,6 +149,8 @@
     <string name="subtotal">Subtotal</string>
     <string name="discountPrices">Total potongan</string>
     <string name="total_price">Total harga</string>
+    <string name="empty_cart">Kamu Belum Menambahkan Produk Apapun Ke Keranjang</string>
+    <string name="CD_ic_empty_cart">gambar keranjang kosong</string>
 
     <string-array name="country_codes">
         <item>+62</item>
