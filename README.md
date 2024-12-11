@@ -1,4 +1,6 @@
-# Thriftly
+# Thriftly 
+![Uploading 2.png…]()
+
 Thrifly exists to reduce fashion waste by creating a platform that empowers thrift store owners to sell preloved clothes while promoting sustainable shopping habits. Our Promise
 
 Thrifly promises to make sustainable fashion accessible and convenient, while helping thrift store owners grow their business and fashion-conscious shoppers find unique, affordable, and eco-friendly items. How Will It Make Customer’s Life Better?
