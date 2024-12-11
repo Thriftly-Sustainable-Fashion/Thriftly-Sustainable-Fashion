@@ -1,12 +1,11 @@
 <resources>
     <string name="app_name">ThriftlyFashion</string>
-  
+
     <string name="illustration_description">Ilustrasi aplikasi</string>
     <string name="background_image_description">Background illustration</string>
     <string name="hello_text">Hello</string>
     <string name="button_register">Daftar</string>
     <string name="login_title">Login</string>
-    <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
     <string name="forgot_password">Lupa password?</string>
     <string name="login_button">Masuk</string>
@@ -39,17 +38,16 @@
     <string name="provinsi_kabupaten">Provinsi - Kabupaten</string>
     <string name="kecamatan_daerah_kode_pos">Kecamatan - Daerah - Kode Pos</string>
     <string name="nama_produk">Nama Produk</string>
-    <string name="kategori">Kategori</string>
-    <string name="ukuran">Ukuran</string>
-    <string name="warna">Warna</string>
-    <string name="jumlah">Jumlah</string>
-    <string name="x">: X</string>
-    <string name="white">: White</string>
-    <string name="_10">: 10</string>
-    <string name="harga">Rp. 000.000</string>
+    <string name="title_category">Kategori</string>
+    <string name="title_size">Ukuran</string>
+    <string name="title_color">Warna</string>
+    <string name="title_amount">Jumlah</string>
+    <string name="size">: X</string>
+    <string name="color">: White</string>
+    <string name="amount">: 10</string>
     <string name="product">Product</string>
     <string name="product_name">Product Name</string>
-    <string name="product_price">Rp. 000.000</string>
+    <string name="product_price">Rp.0</string>
     <string name="btn_warna">Warna</string>
     <string name="btn_ukuran">Ukuran</string>
     <string name="btn_kategori">Kategori</string>
@@ -124,9 +122,35 @@
     <string name="CD_bg_home_design">Gambar dari vektor untuk mempercantik halaman</string>
     <string name="CD_search_button">Tombol yang digunakan untuk melakukan pencarian</string>
     <string name="title_shop">Toko</string>
-    <string name="title_recomendation">Produk yang mungkin anda suka</string>
+    <string name="title_recommendation">Produk yang mungkin anda suka</string>
     <string name="title_help_center">Help Center</string>
     <string name="title_profile">profile</string>
+    <string name="product_category">product category</string>
+    <string name="store_name">Nama Toko</string>
+    <string name="CD_ic_store">Icon dari toko yang menjual produk ini</string>
+    <string name="CD_ic_favorite">Tombol untuk menandai produk sebagai favorit</string>
+    <string name="CD_img_image_product">Gambar dari produk</string>
+    <string name="quantity_product">1</string>
+    <string name="add_cart">Tambahkan Ke Keranjang</string>
+    <string name="CD_minus">tombol untuk mengurangi jumlah produk yang mau dibeli</string>
+    <string name="CD_plus">tombol untuk menambah jumlah produk yang mau dibeli</string>
+    <string name="CD_background_design">Background Design</string>
+    <string name="CD_toogle_password_visible">Tombol untuk melihat password yang telah kamu tulis</string>
+    <string name="product_descrirption">product descrirption</string>
+    <string name="product_color">product color</string>
+    <string name="product_size">product size</string>
+    <string name="product_quantity">product quantity</string>
+    <string name="cart_price">: Rp 0</string>
+    <string name="checkout">Checkout</string>
+    <string name="selected_items">0 Barang terpilih</string>
+    <string name="code_voucher">Masukan kode voucher</string>
+    <string name="CD_ic_detail">tombol untuk mengarahkan ke halaman detail</string>
+    <string name="pilih_metode_pembayaran">Pilih metode pembayaran</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="discountPrices">Total potongan</string>
+    <string name="total_price">Total harga</string>
+    <string name="empty_cart">Kamu Belum Menambahkan Produk Apapun Ke Keranjang</string>
+    <string name="CD_ic_empty_cart">gambar keranjang kosong</string>
 
     <string-array name="country_codes">
         <item>+62</item>

@@ -6,33 +6,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".ui.StartActivity"
-    android:background="@color/primary2">
+    android:background="@color/primary2"
+    tools:context=".ui.StartActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/main">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tvHello"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hello_text"
-            android:textSize="64sp"
-            android:textColor="@color/primary"
+            android:layout_marginTop="32dp"
             android:fontFamily="@font/lilyscriptone_regular"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/hello_text"
+            android:textColor="@color/primary"
+            android:textSize="64sp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="48dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
             android:id="@+id/frameIllustration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvHello">
@@ -41,7 +40,7 @@
                 android:id="@+id/imageViewBackground"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_marginTop="120dp"
+                android:layout_marginTop="100dp"
                 android:contentDescription="@string/background_image_description"
                 android:scaleType="fitXY"
                 android:src="@drawable/img_1" />
@@ -49,7 +48,7 @@
             <ImageView
                 android:id="@+id/imageViewIllustration"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="412dp"
                 android:contentDescription="@string/illustration_description"
                 android:scaleType="centerInside"
                 android:src="@drawable/img" />
@@ -62,15 +61,15 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
             android:layout_marginTop="45dp"
-            android:fontFamily="@font/poppins_medium"
-            android:textSize="20sp"
-            android:gravity="center"
             android:background="@drawable/button_rounded"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
             android:text="@string/login_button"
             android:textColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/frameIllustration"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/frameIllustration" />
 
         <Button
             android:id="@+id/btnDaftar"
@@ -79,14 +78,14 @@
             android:layout_marginHorizontal="32dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/button_outline"
-            android:textColor="@color/primary3"
             android:fontFamily="@font/poppins_medium"
-            android:textSize="20sp"
             android:gravity="center"
             android:text="@string/button_register"
-            app:layout_constraintTop_toBottomOf="@id/btnMasuk"
+            android:textColor="@color/primary3"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/btnMasuk" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

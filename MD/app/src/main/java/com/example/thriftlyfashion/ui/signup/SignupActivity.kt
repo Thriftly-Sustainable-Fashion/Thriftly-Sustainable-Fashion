@@ -4,13 +4,20 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.remote.api.ApiService
+import com.example.thriftlyfashion.remote.api.RetrofitClient
+import com.example.thriftlyfashion.remote.model.SignupRequest
 import com.example.thriftlyfashion.ui.login.LoginActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SignupActivity : AppCompatActivity() {
     private var isPasswordVisible = false
@@ -44,7 +51,7 @@ class SignupActivity : AppCompatActivity() {
         val backButton = findViewById<Button>(R.id.backButton)
 
         val etNama = findViewById<EditText>(R.id.etNama)
-        val email = findViewById<EditText>(R.id.email)
+        val etEmail = findViewById<EditText>(R.id.email)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirPassword)
 
@@ -58,30 +65,70 @@ class SignupActivity : AppCompatActivity() {
 
         signupButton.setOnClickListener {
             val name = etNama.text.toString().trim()
-            val emailText = email.text.toString().trim()
+            val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
             val confirmPassword = etConfirmPassword.text.toString()
+            val isOwner = false
 
-            if (name.isEmpty() || emailText.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show()
+            if (name.isEmpty()) {
+                Log.e("SignupActivity", "Nama tidak boleh kosong!")
+                Toast.makeText(this, "Nama tidak boleh kosong!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Log.e("SignupActivity", "Email tidak valid: $email")
+                Toast.makeText(this, "Email tidak valid!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password.isEmpty()) {
+                Log.e("SignupActivity", "Password tidak boleh kosong!")
+                Toast.makeText(this, "Password tidak boleh kosong!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (password.length < 8) {
+                Log.e("SignupActivity", "Password terlalu pendek: $password")
+                Toast.makeText(this, "Password harus memiliki minimal 8 karakter!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (confirmPassword.isEmpty()) {
+                Log.e("SignupActivity", "Konfirmasi password tidak boleh kosong!")
+                Toast.makeText(this, "Konfirmasi password tidak boleh kosong!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (password != confirmPassword) {
-                Toast.makeText(this, "Password dan konfirmasi password tidak cocok!", Toast.LENGTH_SHORT).show()
+                Log.e("SignupActivity", "Password dan konfirmasi password tidak sama!")
+                Toast.makeText(this, "Password dan konfirmasi password tidak sama!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            AlertDialog.Builder(this).apply {
-                setTitle("Pendaftaran Berhasil!")
-                setMessage("Akun untuk $emailText telah berhasil dibuat.")
-                setPositiveButton("OK") { _, _ ->
-                    val intent = Intent(this@SignupActivity, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
+            val signupRequest = SignupRequest(name, email, password, isOwner)
+
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val response = withContext(Dispatchers.IO) {
+                        val apiService = RetrofitClient.createService(ApiService::class.java)
+                        apiService.registerUser(signupRequest)
+                    }
+
+                    if (response.isSuccessful) {
+                        Log.d("SignupActivity", "Akun berhasil dibuat: $email")
+                        Toast.makeText(this@SignupActivity, "Akun berhasil dibuat!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@SignupActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Log.e("SignupActivity", "Gagal membuat akun untuk: $email")
+                        Toast.makeText(this@SignupActivity, "Gagal membuat akun: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("SignupActivity", "Terjadi kesalahan: ${e.message}")
+                    Toast.makeText(this@SignupActivity, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-                create()
-                show()
             }
         }
 
@@ -89,6 +136,7 @@ class SignupActivity : AppCompatActivity() {
             finish()
         }
     }
+
 
     private fun togglePasswordVisibility(passwordField: EditText, toggleButton: ImageView) {
         isPasswordVisible = !isPasswordVisible
@@ -98,6 +146,7 @@ class SignupActivity : AppCompatActivity() {
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         passwordField.setSelection(passwordField.text.length)
+
         toggleButton.setImageResource(
             if (isPasswordVisible) R.drawable.baseline_visibility_off_24 else R.drawable.baseline_visibility_24
         )
@@ -110,6 +159,7 @@ class SignupActivity : AppCompatActivity() {
         } else {
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
+
         confirmPasswordField.setSelection(confirmPasswordField.text.length)
         toggleButton.setImageResource(
             if (isConfirmPasswordVisible) R.drawable.baseline_visibility_off_24 else R.drawable.baseline_visibility_24

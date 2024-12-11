@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.thriftlyfashion.Product
+import com.bumptech.glide.Glide
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.remote.model.ProductCard
 import com.example.thriftlyfashion.ui.product.ProductDetailActivity
 
 class ProductListAdapter(
     private val context: Context,
-    private val productList: List<Product>
+    private val productList: List<ProductCard>
 ) : RecyclerView.Adapter<ProductListAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val productImage: ImageView = itemView.findViewById(R.id.imageView3)
-        val favoriteIcon: ImageView = itemView.findViewById(R.id.imageView4)
+        val productImage: ImageView = itemView.findViewById(R.id.id_productImage)
+        val favoriteIcon: ImageView = itemView.findViewById(R.id.id_favorite)
         val productName: TextView = itemView.findViewById(R.id.id_productName)
         val productCategory: TextView = itemView.findViewById(R.id.id_productCategory)
         val productPrice: TextView = itemView.findViewById(R.id.id_productName3)
@@ -33,19 +34,20 @@ class ProductListAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
 
-        holder.productImage.setImageResource(product.image)
+        Glide.with(context)
+            .load(product.image)
+            .placeholder(R.drawable.image)
+            .into(holder.productImage)
+
         holder.productName.text = product.name
         holder.productCategory.text = product.category
-        holder.productPrice.text = product.price
+        holder.productPrice.text = "Rp ${String.format("%,.0f", product.price)}"
 
         holder.favoriteIcon.setColorFilter(context.getColor(R.color.white))
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, ProductDetailActivity::class.java).apply {
-                putExtra("PRODUCT_NAME", product.name)
-                putExtra("PRODUCT_CATEGORY", product.category)
-                putExtra("PRODUCT_PRICE", product.price)
-                putExtra("PRODUCT_IMAGE", product.image)
+                putExtra("PRODUCT_ID", product.productId)
             }
             context.startActivity(intent)
         }
