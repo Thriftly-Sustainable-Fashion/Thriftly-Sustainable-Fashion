@@ -31,7 +31,6 @@ Finally, the design team conducted user testing to get feedback and make improve
 
 
 ## Application Features:
-***
 ```
 1.Find Nearby Store
 2.Tailored Recommendation
