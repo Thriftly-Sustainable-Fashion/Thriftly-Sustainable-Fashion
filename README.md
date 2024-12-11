@@ -1,5 +1,4 @@
 # Thriftly 
-***
 ![thriftly](https://github.com/user-attachments/assets/21e31b46-87d4-497f-9cf3-e661525cf0ce)
 
 
@@ -15,7 +14,6 @@ Thriftly used Figma to create a second-hand online shopping app. The process sta
 After that, they focused on the UI design by choosing colors, fonts, and images that fit the thrifting theme. This design was made to be easy to use and attractive.  The next stage was to create an interactive prototype to see how the app works as a whole.
 
 Finally, the design team conducted user testing to get feedback and make improvements. The key design principles are sustainable, simple, responsive, and inclusive. Thriftly builds apps in a structured way, starting from research, design, to testing, with the ultimate goal of creating apps that are useful and fun for users.
-***
 ## Team Members
  ID : C242-PS403
 
