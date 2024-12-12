@@ -238,6 +238,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
+                    android:paddingStart="10dp"
                     android:text="@string/title_recommendation"
                     android:textColor="@color/primary"
                     android:textSize="16sp"

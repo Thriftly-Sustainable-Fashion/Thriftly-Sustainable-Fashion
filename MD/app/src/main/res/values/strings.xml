@@ -151,6 +151,9 @@
     <string name="total_price">Total harga</string>
     <string name="empty_cart">Kamu Belum Menambahkan Produk Apapun Ke Keranjang</string>
     <string name="CD_ic_empty_cart">gambar keranjang kosong</string>
+    <string name="toko_saya">Toko Saya</string>
+    <string name="CD_ic_edit_product">tombol untuk melakukan edit produk</string>
+    <string name="CD_ic_delete_product">Tombol untuk melakukan delete produk</string>
     <string name="halaman_owner">halaman_owner</string>
 
 

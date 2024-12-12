@@ -18,6 +18,7 @@ import com.example.thriftlyfashion.ui.help.HelpCenterActivity
 import com.example.thriftlyfashion.ui.guide.UserGuideActivity
 import com.example.thriftlyfashion.ui.login.LoginActivity
 import com.example.thriftlyfashion.ui.policy.PrivacyPolicyActivity
+import com.example.thriftlyfashion.ui.shopowner.ShopOwnerActivity
 
 class ProfileFragment : Fragment() {
 
@@ -33,6 +34,7 @@ class ProfileFragment : Fragment() {
         val panduanPenggunaCard: CardView = view.findViewById(R.id.id_panduanPengguna)
         val kebijakanPrivasiCard: CardView = view.findViewById(R.id.id_kebijakanPrivasi)
         val updateProfileCard: LinearLayout = view.findViewById(R.id.id_updateProfile)
+        val myStoreCard: CardView = view.findViewById(R.id.id_mystore)
         val logoutTextView: TextView = view.findViewById(R.id.logout)
 
         riwayatTransaksiCard.setOnClickListener {
@@ -59,6 +61,10 @@ class ProfileFragment : Fragment() {
             onUpdateProfileClicked()
         }
 
+        myStoreCard.setOnClickListener {
+            onMyStore()
+        }
+
         logoutTextView.setOnClickListener {
             onLogoutClicked()
         }
@@ -80,6 +86,11 @@ class ProfileFragment : Fragment() {
 
     private fun onRiwayatTransaksiClicked() {
         val intent = Intent(requireContext(), TransactionHistoryActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onMyStore() {
+        val intent = Intent(requireContext(), ShopOwnerActivity::class.java)
         startActivity(intent)
     }
 

@@ -23,7 +23,7 @@ class ProductListAdapter(
         val favoriteIcon: ImageView = itemView.findViewById(R.id.id_favorite)
         val productName: TextView = itemView.findViewById(R.id.id_productName)
         val productCategory: TextView = itemView.findViewById(R.id.id_productCategory)
-        val productPrice: TextView = itemView.findViewById(R.id.id_productName3)
+        val productPrice: TextView = itemView.findViewById(R.id.id_productPrice)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
