@@ -13,7 +13,7 @@
 
         <activity
             android:name=".ui.SplashActivity"
-            android:theme="@style/Theme.ThriftlyFashion.Splash"
+            android:theme="@style/Theme.ThriftlyFashion"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,6 +46,10 @@
         <activity
             android:name=".ui.profile.ProfileEditActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.shopowner.ShopOwnerActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.cart.PaymentMethodActivity"
             android:exported="false" />

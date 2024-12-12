@@ -67,8 +67,13 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (password.length < 8) {
+                Toast.makeText(this, "Password harus memiliki minimal 8 karakter!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (password != confirmPassword) {
-                Toast.makeText(this, "Password dan konfirmasi password tidak cocok!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Password atau konfirmasi password tidak cocok.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

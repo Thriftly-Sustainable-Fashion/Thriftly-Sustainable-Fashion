@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thriftlyfashion.R
 import com.example.thriftlyfashion.ui.MainActivity
+import com.example.thriftlyfashion.ui.signup.SignupActivity
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var etUsername: EditText
@@ -38,7 +39,8 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, "Lupa password? Fitur ini belum tersedia.", Toast.LENGTH_SHORT).show()
         }
         tvRegister.setOnClickListener {
-            Toast.makeText(this, "Arahkan ke halaman registrasi.", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -48,6 +50,10 @@ class LoginActivity : AppCompatActivity() {
 
         if (username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Username dan password tidak boleh kosong.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (password.length < 8) {
+            Toast.makeText(this, "Password harus memiliki minimal 8 karakter!", Toast.LENGTH_SHORT).show()
             return
         }
 

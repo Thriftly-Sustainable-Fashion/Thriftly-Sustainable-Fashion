@@ -16,7 +16,7 @@ import com.example.thriftlyfashion.ui.payment.AddPaymentMethodActivity
 import com.example.thriftlyfashion.ui.help.HelpCenterActivity
 import com.example.thriftlyfashion.ui.guide.UserGuideActivity
 import com.example.thriftlyfashion.ui.policy.PrivacyPolicyActivity
-import com.example.thriftlyfashion.ui.profile.ProfileEditActivity
+import com.example.thriftlyfashion.ui.shopowner.ShopOwnerActivity
 
 class ProfileFragment : Fragment() {
 
@@ -26,6 +26,7 @@ class ProfileFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
+        val shopOwnerTextView: TextView = view.findViewById(R.id.tv_shop_owner)
         val riwayatTransaksiCard: CardView = view.findViewById(R.id.id_riwayatTransaksi)
         val addMethodPayCard: CardView = view.findViewById(R.id.id_addMethodPay)
         val pusatBantuanCard: CardView = view.findViewById(R.id.id_pusatBantuan)
@@ -33,6 +34,10 @@ class ProfileFragment : Fragment() {
         val kebijakanPrivasiCard: CardView = view.findViewById(R.id.id_kebijakanPrivasi)
         val updateProfileCard: LinearLayout = view.findViewById(R.id.id_updateProfile)
         val logoutTextView: TextView = view.findViewById(R.id.logout)
+
+        shopOwnerTextView.setOnClickListener {
+            onShopOwnerClicked()
+        }
 
         riwayatTransaksiCard.setOnClickListener {
             onRiwayatTransaksiClicked()
@@ -63,6 +68,11 @@ class ProfileFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun onShopOwnerClicked() {
+        val intent = Intent(requireContext(), ShopOwnerActivity::class.java)
+        startActivity(intent)
     }
 
     private fun onLogoutClicked() {

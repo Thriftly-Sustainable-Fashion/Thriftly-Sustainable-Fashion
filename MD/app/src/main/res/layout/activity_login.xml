@@ -32,6 +32,8 @@
             android:background="@drawable/imput_background"
             android:fontFamily="@font/poppins_light"
             android:hint="@string/username_hint"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey"
             android:inputType="text"
             android:padding="11dp"
             android:textSize="20sp" />
@@ -48,6 +50,8 @@
                 android:hint="@string/password_hint"
                 android:fontFamily="@font/poppins_light"
                 android:textSize="20sp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey"
                 android:background="@drawable/imput_background"
                 android:padding="11dp"
                 android:inputType="textPassword" />

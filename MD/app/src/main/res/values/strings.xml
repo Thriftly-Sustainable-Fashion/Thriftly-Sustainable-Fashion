@@ -26,6 +26,7 @@
     <string name="confirmation_button">Konfirmasi</string>
     <string name="registration">Pendaftaran Berhasil!</string>
     <string name="message">Akun untuk telah berhasil dibuat.</string>
+    <string name="login_owner">Login to Your Account</string>
 
     <string name="search">Search ...</string>
     <string name="hero_image">hero image</string>
@@ -96,6 +97,8 @@
     </string>
     <string name="profileName">John Doe</string>
     <string name="sapa">Hey,</string>
+    <string name="Shop_Owner">Shop Owner</string>
+    <string name="halaman_owner">Ini adalah halaman Shop Owner</string>
     <string name="riwayat_transaksi">Riwayat Transaksi</string>
     <string name="tambah_metode_pembayaran">Tambah Metode Pembayaran</string>
     <string name="pusat_bantuan">Pusat Bantuan</string>

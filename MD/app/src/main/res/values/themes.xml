@@ -1,15 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.ThriftlyFashion" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
+
         <item name="colorPrimary">@color/primary</item>
         <item name="colorSecondary">@color/grey</item>
         <item name="colorOnPrimary">@color/primary3</item>
+        <item name="android:statusBarColor">@color/primary</item>
 
-    </style>
-
-    <style name="Theme.ThriftlyFashion.Splash" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/primary</item>
     </style>
 
     <style name="Theme.ThriftlyFashion" parent="Base.Theme.ThriftlyFashion">

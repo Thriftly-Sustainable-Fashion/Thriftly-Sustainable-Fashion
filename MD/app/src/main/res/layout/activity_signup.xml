@@ -70,6 +70,8 @@
                 android:layout_marginBottom="25dp"
                 android:background="@drawable/imput_background"
                 android:fontFamily="@font/poppins_light"
+                android:textColorHint="@color/grey"
+                android:textColor="@color/black"
                 android:hint="@string/name_hint"
                 android:inputType="text"
                 android:padding="11dp"
@@ -84,6 +86,8 @@
                 android:textSize="20sp"
                 android:background="@drawable/imput_background"
                 android:padding="11dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey"
                 android:inputType="textEmailAddress"
                 android:layout_marginBottom="25dp"/>
 
@@ -99,8 +103,10 @@
                     android:hint="@string/password_hint"
                     android:fontFamily="@font/poppins_light"
                     android:textSize="20sp"
+                    android:textColor="@color/black"
                     android:background="@drawable/imput_background"
                     android:padding="11dp"
+                    android:textColorHint="@color/grey"
                     android:inputType="textPassword" />
 
                 <ImageView
@@ -125,8 +131,10 @@
                     android:hint="@string/confirmation_password"
                     android:fontFamily="@font/poppins_light"
                     android:textSize="20sp"
+                    android:textColor="@color/black"
                     android:background="@drawable/imput_background"
                     android:padding="11dp"
+                    android:textColorHint="@color/grey"
                     android:inputType="textPassword" />
 
                 <ImageView
