@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ThriftlyFashion">
-
+        <activity
+            android:name=".ui.signup.SignupOwnerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.shop.ShopActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
-            android:theme="@style/Theme.ThriftlyFashion.Splash"
-            android:exported="true" >
+            android:exported="true"
+            android:theme="@style/Theme.ThriftlyFashion.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.profile.ProfileDetailActivity"
             android:exported="false" />
@@ -32,8 +40,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.policy.PrivacyPolicyActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ThriftlyFashion" />
+            android:exported="false" />
         <activity
             android:name=".ui.help.HelpCenterActivity"
             android:exported="false" />
@@ -53,11 +60,9 @@
             android:name=".ui.product.ProductDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.homepage.HomepageActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.MainActivity"
-            android:exported="false" />
+            android:exported="true">
+        </activity>
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false" />
@@ -66,6 +71,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.StartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.shopowner.ShopOwnerActivity"
             android:exported="false" />
     </application>
 

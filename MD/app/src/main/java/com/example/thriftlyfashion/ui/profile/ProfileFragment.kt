@@ -11,12 +11,14 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.remote.UserSession
 import com.example.thriftlyfashion.ui.history.TransactionHistoryActivity
 import com.example.thriftlyfashion.ui.payment.AddPaymentMethodActivity
 import com.example.thriftlyfashion.ui.help.HelpCenterActivity
 import com.example.thriftlyfashion.ui.guide.UserGuideActivity
+import com.example.thriftlyfashion.ui.login.LoginActivity
 import com.example.thriftlyfashion.ui.policy.PrivacyPolicyActivity
-import com.example.thriftlyfashion.ui.profile.ProfileEditActivity
+import com.example.thriftlyfashion.ui.shopowner.ShopOwnerActivity
 
 class ProfileFragment : Fragment() {
 
@@ -32,6 +34,7 @@ class ProfileFragment : Fragment() {
         val panduanPenggunaCard: CardView = view.findViewById(R.id.id_panduanPengguna)
         val kebijakanPrivasiCard: CardView = view.findViewById(R.id.id_kebijakanPrivasi)
         val updateProfileCard: LinearLayout = view.findViewById(R.id.id_updateProfile)
+        val myStoreCard: CardView = view.findViewById(R.id.id_mystore)
         val logoutTextView: TextView = view.findViewById(R.id.logout)
 
         riwayatTransaksiCard.setOnClickListener {
@@ -58,6 +61,10 @@ class ProfileFragment : Fragment() {
             onUpdateProfileClicked()
         }
 
+        myStoreCard.setOnClickListener {
+            onMyStore()
+        }
+
         logoutTextView.setOnClickListener {
             onLogoutClicked()
         }
@@ -66,15 +73,24 @@ class ProfileFragment : Fragment() {
     }
 
     private fun onLogoutClicked() {
-        Toast.makeText(requireContext(), "Keluar dari aplikasi", Toast.LENGTH_SHORT).show()
-        // Navigasi ke halaman login
-//        val intent = Intent(requireContext(), LoginActivity::class.java)
-//        startActivity(intent)
-        activity?.finish() // Optional: Jika ingin menghapus fragment dari stack
+        UserSession.clearSession()
+
+        Toast.makeText(requireContext(), "Anda berhasil logout", Toast.LENGTH_SHORT).show()
+
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+
+        requireActivity().finish()
     }
 
     private fun onRiwayatTransaksiClicked() {
         val intent = Intent(requireContext(), TransactionHistoryActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onMyStore() {
+        val intent = Intent(requireContext(), ShopOwnerActivity::class.java)
         startActivity(intent)
     }
 

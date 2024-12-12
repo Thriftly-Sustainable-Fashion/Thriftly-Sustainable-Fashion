@@ -2,18 +2,29 @@ package com.example.thriftlyfashion.ui.homepage
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.thriftlyfashion.Product
 import com.example.thriftlyfashion.R
+import com.example.thriftlyfashion.remote.api.ApiService
+import com.example.thriftlyfashion.remote.api.RetrofitClient
+import com.example.thriftlyfashion.remote.model.ProductCard
 import com.example.thriftlyfashion.ui.search.SearchActivity
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.math.abs
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -21,8 +32,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.shopRecyclerView)
-        val heroRecyclerView: RecyclerView = view.findViewById(R.id.heroRecyclerView)
         val productRecyclerView: RecyclerView = view.findViewById(R.id.id_productList)
+
+        val heroRecyclerView: RecyclerView = view.findViewById(R.id.heroRecyclerView)
+        val loadingHero: ProgressBar = view.findViewById(R.id.id_loadingHero)
+        val emptyCardHero: CardView = view.findViewById(R.id.id_emptyHero)
+
+        updateUI(loadingHero, heroRecyclerView, emptyCardHero, "loading")
 
         val productImages = listOf(
             R.drawable.ic_shop,
@@ -39,36 +55,66 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             R.drawable.hero4
         )
 
-        val productList = listOf(
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 1", "Category 1", "Rp 500.000", "", "", ""),
-            Product(R.drawable.image, "Product 2", "Category 2", "Rp 750.000", "", "", "")
-        )
+        if (heroImages.isNotEmpty()) {
+            updateUI(loadingHero, heroRecyclerView, emptyCardHero, "success")
+        } else {
+            updateUI(loadingHero, heroRecyclerView, emptyCardHero, "empty")
+        }
 
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.layoutManager = layoutManager
+        val apiService = RetrofitClient.createService(ApiService::class.java)
 
-        val heroLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        heroRecyclerView.layoutManager = heroLayoutManager
+        apiService.getAllProducts().enqueue(object : Callback<List<ProductCard>> {
+            override fun onResponse(call: Call<List<ProductCard>>, response: Response<List<ProductCard>>) {
+                if (!isAdded) return
 
-        val productLayoutManager = FlexboxLayoutManager(requireContext())
-        productLayoutManager.flexWrap = FlexWrap.WRAP
-        productLayoutManager.flexDirection = FlexDirection.ROW
-        productRecyclerView.layoutManager = productLayoutManager
+                if (response.isSuccessful) {
+                    val allProducts = response.body() ?: emptyList()
 
+                    val productList = allProducts.map { product ->
+                        ProductCard(
+                            productId = product.productId,
+                            image = product.image,
+                            name = product.name,
+                            category = product.category,
+                            price = product.price,
+                        )
+                    }
 
-        val adapter = ShopListAdapter(requireContext(), productImages)
-        recyclerView.adapter = adapter
+                    context?.let { ctx ->
+                        val layoutManager = LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
+                        recyclerView.layoutManager = layoutManager
 
-        val heroAdapter = HeroListAdapter(requireContext(), heroImages)
-        heroRecyclerView.adapter = heroAdapter
+                        val heroLayoutManager = LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
+                        heroRecyclerView.layoutManager = heroLayoutManager
 
-        val productAdapter = ProductListAdapter(requireContext(), productList)
-        productRecyclerView.adapter = productAdapter
+                        val productLayoutManager = FlexboxLayoutManager(ctx)
+                        productLayoutManager.flexWrap = FlexWrap.WRAP
+                        productLayoutManager.flexDirection = FlexDirection.ROW
+                        productRecyclerView.layoutManager = productLayoutManager
 
+                        val adapter = ShopListAdapter(ctx, productImages)
+                        recyclerView.adapter = adapter
+
+                        val heroAdapter = HeroListAdapter(ctx, heroImages)
+                        heroRecyclerView.adapter = heroAdapter
+
+                        val productAdapter = ProductListAdapter(ctx, productList)
+                        productRecyclerView.adapter = productAdapter
+
+                        adjustRecyclerViewForScreenSize(productRecyclerView)
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Gagal mengambil data produk", Toast.LENGTH_SHORT).show()
+                    Log.e("HomeFragment", "API error: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<ProductCard>>, t: Throwable) {
+                if (!isAdded) return
+                Toast.makeText(requireContext(), "Terjadi kesalahan: ${t.message}", Toast.LENGTH_SHORT).show()
+                Log.e("HomeFragment", "API failure: ${t.message}")
+            }
+        })
 
         recyclerView.setHasFixedSize(true)
 
@@ -83,12 +129,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 for (i in 0 until recyclerView.childCount) {
                     val child = recyclerView.getChildAt(i) ?: continue
-                    val childCenterX = (child.left + child.right) / 2
-                    val distanceFromCenter = Math.abs(centerX - childCenterX)
+                    val layoutParams = child.layoutParams as RecyclerView.LayoutParams
 
+                    val childCenterX = child.left + layoutParams.leftMargin + (child.width / 2)
+                    val distanceFromCenter = abs(centerX - childCenterX)
                     val scale = 1 - (distanceFromCenter.toFloat() / recyclerView.width.toFloat())
 
-                    val minScale = 0.6f
+                    val minScale = 0.8f
                     val maxScale = 1.0f
                     val interpolatedScale = minScale + scale * (maxScale - minScale)
 
@@ -103,6 +150,42 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             val intent = Intent(requireContext(), SearchActivity::class.java)
             startActivity(intent)
         }
+    }
 
+    private fun updateUI(progressBar: ProgressBar, recyclerView: RecyclerView, emptyCard: CardView, state: String) {
+        when (state) {
+            "loading" -> {
+                progressBar.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+                emptyCard.visibility = View.GONE
+            }
+            "success" -> {
+                progressBar.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+                emptyCard.visibility = View.GONE
+            }
+            "empty" -> {
+                progressBar.visibility = View.GONE
+                recyclerView.visibility = View.GONE
+                emptyCard.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun adjustRecyclerViewForScreenSize(recyclerView: RecyclerView) {
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+
+        val columnCount = when {
+            screenWidth >= 1800 -> 4
+            screenWidth >= 1200 -> 3
+            screenWidth >= 800 -> 2
+            else -> 1
+        }
+
+        val itemWidth = (screenWidth / columnCount) - 40
+        val layoutParams = recyclerView.layoutParams
+        layoutParams.width = itemWidth * columnCount
+        recyclerView.layoutParams = layoutParams
     }
 }

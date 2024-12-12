@@ -1,9 +1,9 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="140dp"
-    android:layout_height="250dp"
-    android:layout_marginRight="20dp"
+    android:layout_width="145dp"
+    android:layout_height="270dp"
+    android:layout_marginEnd="20dp"
     android:layout_marginBottom="10dp"
     app:cardCornerRadius="10dp">
 
@@ -17,21 +17,24 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/id_productImage"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+                android:contentDescription="@string/CD_img_image_product"
                 android:scaleType="centerCrop"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/id_favorite"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="right"
                 android:layout_margin="5dp"
+                android:contentDescription="@string/CD_ic_favorite"
                 android:padding="5dp"
-                android:tint="@color/white"
-                app:srcCompat="@drawable/ic_favorite_inactive" />
+                app:tint="@color/white"
+                app:srcCompat="@drawable/ic_favorite_inactive"
+                tools:ignore="RtlHardcoded" />
 
         </FrameLayout>
 
@@ -45,7 +48,7 @@
                 android:id="@+id/id_productName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Product Name"
+                android:text="@string/product_name"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -53,15 +56,15 @@
                 android:id="@+id/id_productCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Product Category"
+                android:text="@string/product_category"
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/id_productName3"
+                android:id="@+id/id_productPrice"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="bottom"
-                android:text="Rp 000.000"
+                android:text="@string/product_price"
                 android:textColor="@color/primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
