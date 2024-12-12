@@ -67,4 +67,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.kotlin.reflect)
     implementation(libs.google.material.v161)
+    implementation (libs.flexbox)
 }

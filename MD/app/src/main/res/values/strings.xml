@@ -151,6 +151,8 @@
     <string name="total_price">Total harga</string>
     <string name="empty_cart">Kamu Belum Menambahkan Produk Apapun Ke Keranjang</string>
     <string name="CD_ic_empty_cart">gambar keranjang kosong</string>
+    <string name="halaman_owner">halaman_owner</string>
+
 
     <string-array name="country_codes">
         <item>+62</item>

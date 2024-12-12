@@ -1,6 +1,7 @@
 [versions]
 agp = "8.6.1"
 flexbox = "3.0.0"
+flexboxVersion = "3.0.0"
 glide = "4.15.1"
 googleMaterialVersion = "1.6.1"
 kotlin = "1.9.22"
@@ -24,6 +25,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [libraries]
+android-flexbox = { module = "com.google.android:flexbox", version.ref = "flexboxVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationFragmentKtx" }
