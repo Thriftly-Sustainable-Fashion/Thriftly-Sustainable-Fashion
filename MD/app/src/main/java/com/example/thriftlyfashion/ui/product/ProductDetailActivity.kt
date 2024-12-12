@@ -122,6 +122,7 @@ class ProductDetailActivity : AppCompatActivity() {
         recyclerView.isNestedScrollingEnabled = false
 
         recyclerView.adapter = adapter
+        adjustRecyclerViewForScreenSize(recyclerView)
     }
 
     private fun fetchProductDetails(productId: Int) {
@@ -214,4 +215,20 @@ class ProductDetailActivity : AppCompatActivity() {
         )
     }
 
+    private fun adjustRecyclerViewForScreenSize(recyclerView: RecyclerView) {
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+
+        val columnCount = when {
+            screenWidth >= 1800 -> 4
+            screenWidth >= 1200 -> 3
+            screenWidth >= 800 -> 2
+            else -> 1
+        }
+
+        val itemWidth = (screenWidth / columnCount) - 20
+        val layoutParams = recyclerView.layoutParams
+        layoutParams.width = itemWidth * columnCount
+        recyclerView.layoutParams = layoutParams
+    }
 }

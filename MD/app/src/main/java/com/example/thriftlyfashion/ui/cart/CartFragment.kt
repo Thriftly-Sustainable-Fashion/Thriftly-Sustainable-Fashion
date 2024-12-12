@@ -39,6 +39,12 @@ class CartFragment : Fragment() {
     private lateinit var cartView: LinearLayout
     private var cartItems: List<CartItem> = emptyList()
     val apiService = RetrofitClient.createService(ApiService::class.java)
+    private lateinit var checkoutButton: Button
+
+
+    private var subtotal: Double = 0.0
+    private var discount: Double = 0.0
+    private var totalPrice: Double = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,55 +59,54 @@ class CartFragment : Fragment() {
         totalSelectedItemsTextView = rootView.findViewById(R.id.id_total_selected_items)
         emptyCartTextView = rootView.findViewById(R.id.id_emptyCart)
         cartView = rootView.findViewById(R.id.id_cartView)
+        checkoutButton = rootView.findViewById(R.id.Checkout)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         val sharedPrefManager = SharedPrefManager(requireContext())
         val userId = sharedPrefManager.getUserId()
 
-        Log.d("CartFragment", "Fetching cart items for userId: $userId")
-
         apiService.getCartItems(userId).enqueue(object : Callback<List<CartItem>> {
             override fun onResponse(call: Call<List<CartItem>>, response: Response<List<CartItem>>) {
                 if (response.isSuccessful) {
                     cartItems = response.body() ?: emptyList()
-                    Log.d("CartFragment", "API response: $cartItems")
-                    if (cartItems.isEmpty()) {
-                        Toast.makeText(requireContext(), "Keranjang kosong", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(requireContext(), "Data keranjang berhasil diambil", Toast.LENGTH_SHORT).show()
-                    }
 
-                    productCartAdapter = ProductCartAdapter(
-                        requireContext(),
-                        cartItems,
-                        onDeleteClickListener = { id, position ->
-                            deleteCartItem(id, position, cartItems)
-                        },
-                        onCheckBoxClickListener = { productId, totalPrice, isChecked ->
-                            if (isChecked) {
-                                selectedProducts.add(Pair(productId.toString(), totalPrice))
-                            } else {
-                                selectedProducts.removeIf { it.first == productId.toString() }
+                    if (cartItems.isEmpty()) {
+                        updateCartVisibility(cartItems)
+                    } else {
+                        productCartAdapter = ProductCartAdapter(
+                            requireContext(),
+                            cartItems,
+                            onDeleteClickListener = { id, position ->
+                                deleteCartItem(id, position, cartItems)
+                            },
+                            onCheckBoxClickListener = { productId, totalPrice, isChecked ->
+                                if (isChecked) {
+                                    selectedProducts.add(Pair(productId.toString(), totalPrice))
+                                } else {
+                                    selectedProducts.removeIf { it.first == productId.toString() }
+                                }
+                                calculateTotals()
                             }
-                            calculateTotals()
-                        }
-                    )
-                    recyclerView.adapter = productCartAdapter
-                    updateCartVisibility(cartItems)
-                    calculateTotals()
+                        )
+                        recyclerView.adapter = productCartAdapter
+                        updateCartVisibility(cartItems)
+                        calculateTotals()
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("CartFragment", "API error: ${response.code()}, $errorBody")
-                    Toast.makeText(requireContext(), "Gagal mengambil data keranjang", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<CartItem>>, t: Throwable) {
                 Log.e("CartFragment", "API call failed", t)
-                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+
+        checkoutButton.setOnClickListener {
+            performCheckout()
+        }
 
         updateCartVisibility(cartItems)
 
@@ -122,7 +127,6 @@ class CartFragment : Fragment() {
             address2 = "Cicendo - Pasteur - 40181"
         )
     }
-
 
     private fun deleteCartItem(id: Int, position: Int, cartItems: List<CartItem>) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.custom_dialog_confirmation, null)
@@ -147,11 +151,9 @@ class CartFragment : Fragment() {
                     response: Response<Map<String, String>>
                 ) {
                     if (response.isSuccessful) {
-                        // Remove the item from the local cart list
                         val updatedCartItems = cartItems.toMutableList()
                         updatedCartItems.removeAt(position)
 
-                        // Update the adapter with the new cart items list
                         productCartAdapter.updateCartItems(updatedCartItems)
                         selectedProducts.removeIf { it.first == productIdToRemove.toString() }
 
@@ -175,9 +177,9 @@ class CartFragment : Fragment() {
     }
 
     private fun calculateTotals() {
-        val subtotal = selectedProducts.sumOf { it.second }
-        val discount = subtotal * 0.10
-        val totalPrice = subtotal - discount
+        subtotal = selectedProducts.sumOf { it.second }
+        discount = subtotal * 0.10
+        totalPrice = subtotal - discount
 
         val itemCount = selectedProducts.size
         totalSelectedItemsTextView.text = "$itemCount barang terpilih"
@@ -212,5 +214,33 @@ class CartFragment : Fragment() {
         recipientNameTextView.text = recipientName
         address1TextView.text = address1
         address2TextView.text = address2
+    }
+
+    private fun performCheckout() {
+        val selectedProductIds = selectedProducts.map { it.first }
+        val totalAmount = totalPrice
+
+        val orderDetails = mapOf(
+            "productIds" to selectedProductIds,
+            "totalAmount" to totalAmount
+        )
+
+        Toast.makeText(context, "Order placed successfully", Toast.LENGTH_SHORT).show()
+
+//        // Example: Send order details to your backend
+//        apiService.placeOrder(orderDetails).enqueue(object : Callback<Map<String, String>> {
+//            override fun onResponse(call: Call<Map<String, String>>, response: Response<Map<String, String>>) {
+//                if (response.isSuccessful) {
+//                    // Handle successful order placement
+//                    Toast.makeText(context, "Order placed successfully", Toast.LENGTH_SHORT).show()
+//                } else {
+//                    Toast.makeText(context, "Failed to place order", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<Map<String, String>>, t: Throwable) {
+//                Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+//            }
+//        })
     }
 }

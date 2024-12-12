@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -13,16 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.remote.SharedPrefManager
 import com.example.thriftlyfashion.remote.api.ApiService
 import com.example.thriftlyfashion.remote.api.RetrofitClient
 import com.example.thriftlyfashion.remote.model.ProductCard
-import com.example.thriftlyfashion.ui.login.LoginActivity
 import com.example.thriftlyfashion.ui.search.SearchActivity
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,9 +55,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             R.drawable.hero4
         )
 
-        if(heroImages.isNotEmpty()){
+        if (heroImages.isNotEmpty()) {
             updateUI(loadingHero, heroRecyclerView, emptyCardHero, "success")
-        }else{
+        } else {
             updateUI(loadingHero, heroRecyclerView, emptyCardHero, "empty")
         }
 
@@ -67,6 +65,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         apiService.getAllProducts().enqueue(object : Callback<List<ProductCard>> {
             override fun onResponse(call: Call<List<ProductCard>>, response: Response<List<ProductCard>>) {
+                if (!isAdded) return
+
                 if (response.isSuccessful) {
                     val allProducts = response.body() ?: emptyList()
 
@@ -80,27 +80,29 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         )
                     }
 
-                    val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    recyclerView.layoutManager = layoutManager
+                    context?.let { ctx ->
+                        val layoutManager = LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
+                        recyclerView.layoutManager = layoutManager
 
-                    val heroLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    heroRecyclerView.layoutManager = heroLayoutManager
+                        val heroLayoutManager = LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
+                        heroRecyclerView.layoutManager = heroLayoutManager
 
-                    val productLayoutManager = FlexboxLayoutManager(requireContext())
-                    productLayoutManager.flexWrap = FlexWrap.WRAP
-                    productLayoutManager.flexDirection = FlexDirection.ROW
-                    productLayoutManager.justifyContent = JustifyContent.SPACE_AROUND
-                    productRecyclerView.layoutManager = productLayoutManager
+                        val productLayoutManager = FlexboxLayoutManager(ctx)
+                        productLayoutManager.flexWrap = FlexWrap.WRAP
+                        productLayoutManager.flexDirection = FlexDirection.ROW
+                        productRecyclerView.layoutManager = productLayoutManager
 
-                    val adapter = ShopListAdapter(requireContext(), productImages)
-                    recyclerView.adapter = adapter
+                        val adapter = ShopListAdapter(ctx, productImages)
+                        recyclerView.adapter = adapter
 
-                    val heroAdapter = HeroListAdapter(requireContext(), heroImages)
-                    heroRecyclerView.adapter = heroAdapter
+                        val heroAdapter = HeroListAdapter(ctx, heroImages)
+                        heroRecyclerView.adapter = heroAdapter
 
-                    val productAdapter = ProductListAdapter(requireContext(), productList)
-                    productRecyclerView.adapter = productAdapter
+                        val productAdapter = ProductListAdapter(ctx, productList)
+                        productRecyclerView.adapter = productAdapter
 
+                        adjustRecyclerViewForScreenSize(productRecyclerView)
+                    }
                 } else {
                     Toast.makeText(requireContext(), "Gagal mengambil data produk", Toast.LENGTH_SHORT).show()
                     Log.e("HomeFragment", "API error: ${response.message()}")
@@ -108,6 +110,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             }
 
             override fun onFailure(call: Call<List<ProductCard>>, t: Throwable) {
+                if (!isAdded) return
                 Toast.makeText(requireContext(), "Terjadi kesalahan: ${t.message}", Toast.LENGTH_SHORT).show()
                 Log.e("HomeFragment", "API failure: ${t.message}")
             }
@@ -167,5 +170,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 emptyCard.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun adjustRecyclerViewForScreenSize(recyclerView: RecyclerView) {
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+
+        val columnCount = when {
+            screenWidth >= 1800 -> 4
+            screenWidth >= 1200 -> 3
+            screenWidth >= 800 -> 2
+            else -> 1
+        }
+
+        val itemWidth = (screenWidth / columnCount) - 40
+        val layoutParams = recyclerView.layoutParams
+        layoutParams.width = itemWidth * columnCount
+        recyclerView.layoutParams = layoutParams
     }
 }
