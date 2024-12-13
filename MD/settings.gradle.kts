@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ThriftlyFashion"
 include(":app")
- 
+

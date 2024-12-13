@@ -171,4 +171,17 @@
         <item>+66</item>
         <item>+84</item>
     </string-array>
+
+    <string name="add_product_title">Tambah Produk</string>
+    <string name="main_description_label">Deskripsi Utama Produk</string>
+    <string name="product_name_hint">Nama Produk</string>
+    <string name="product_price_hint">Harga Produk</string>
+    <string name="upload_photo_hint">Pilih satu atau beberapa foto</string>
+    <string name="upload_photo_button">Unggah Foto</string>
+    <string name="additional_description_label">Deskripsi Tambahan</string>
+    <string name="add_button">Tambah</string>
+    <string name="fill_all_fields_warning">Harap isi semua field!</string>
+    <string name="product_added_success">Produk %1$s berhasil ditambahkan!</string>
+    <string name="upload_photo_unavailable">Fitur unggah foto belum tersedia</string>
+    <string name="upload_photo_icon">Icon</string>
 </resources>
