@@ -79,6 +79,9 @@
         <activity
             android:name=".ui.AddProductOwner.AddProductActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.AddBulkProduct.AddBulkProductActivity"
+            android:exported="false" />
 
     </application>
 

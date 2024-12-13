@@ -184,4 +184,10 @@
     <string name="product_added_success">Produk %1$s berhasil ditambahkan!</string>
     <string name="upload_photo_unavailable">Fitur unggah foto belum tersedia</string>
     <string name="upload_photo_icon">Icon</string>
+
+    <string name="product_quantity_label">Jumlah Produk</string>
+    <string name="min">-</string>
+    <string name="plus">+</string>
+    <string name="ten">10</string>
+
 </resources>
