@@ -31,7 +31,7 @@ https://github.com/Thriftly-Sustainable-Fashion/Thriftly-Sustainable-Fashion/tre
 - `/api/products/*` - Product operations
 - `/api/orders/*` - Order processing
 - `/api/recommendations/*` - ML-based recommendations
-- Complete API documentation available in [API_DOCS.md](./docs/API_DOCS.md)
+- Complete API documentation available in [README.md]([./docs/API_DOCS.md](https://github.com/Thriftly-Sustainable-Fashion/Thriftly-Sustainable-Fashion/blob/9477f7c42718be28cf3018927d33f9201168ce7d/thriftly-backend/README.md))
 
 
 ## Cloud Services Overview
