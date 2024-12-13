@@ -60,32 +60,6 @@ app.get('/', (req, res) => {
     });  
 });  
 
-// Authentication Middleware  
-const authenticateUser = async (req, res, next) => {  
-    const { email, password } = req.body;  
-    try {  
-        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);  
-        if (users.length === 0) {  
-            logger.warn('Invalid login attempt: User not found');  
-            return res.status(401).json({ message: 'Invalid credentials' });  
-        }  
-        const user = users[0];  
-        const isValid = await bcrypt.compare(password, user.password_hash);  
-        if (!isValid) {  
-            logger.warn('Invalid login attempt: Incorrect password');  
-            return res.status(401).json({ message: 'Invalid credentials' });  
-        }  
-        req.user = user;  
-        next();  
-    } catch (error) {  
-        logger.error('Authentication error:', error);  
-        res.status(500).json({ message: 'Authentication error' });  
-    }  
-};  
-
-
-// Routes  
-
 // 1. Register User  
 app.post('/api/users/register', async (req, res) => {  
     try {  
@@ -112,21 +86,62 @@ app.post('/api/users/register', async (req, res) => {
 });  
 
 // 2. Login User  
-app.post('/api/users/login', authenticateUser, (req, res) => {  
-    const { password_hash, ...user } = req.user;  
-    logger.info('User logged in successfully:', { userId: user.user_id });  
-    res.json({  
-        message: 'Login successful',  
-        user  
-    });  
-});  
+app.post('/api/users/login', async (req, res) => {  
+    try {
+        const { email, password } = req.body;
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        
+        if (users.length === 0) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
 
-// 3. Get Product by ID  
+        const user = users[0];
+        const isValid = await bcrypt.compare(password, user.password_hash);
+        
+        if (!isValid) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const { password_hash, ...userWithoutPassword } = user;
+        res.json({
+            message: 'Login successful',
+            user: userWithoutPassword
+        });
+    } catch (error) {
+        logger.error('Login error:', error);
+        res.status(500).json({ message: 'Login error' });
+    }
+});
+
+// 3. Get All Products
+app.get('/api/products', async (req, res) => {
+    try {
+        const [products] = await pool.query(
+            `SELECT p.*, c.name as category_name, u.name as seller_name 
+             FROM products p 
+             LEFT JOIN category c ON p.category_id = c.category_id
+             LEFT JOIN users u ON p.user_id = u.user_id
+             WHERE p.deleted_at IS NULL`
+        );
+        res.json(products);
+    } catch (error) {
+        logger.error('Error fetching products:', error);
+        res.status(500).json({ message: 'Error fetching products' });
+    }
+});
+
+// 4. Get Product by ID
 app.get('/api/products/:id', async (req, res) => {  
     try {  
-        const [product] = await pool.query('SELECT * FROM products WHERE product_id = ?', [req.params.id]);  
+        const [product] = await pool.query(
+            `SELECT p.*, c.name as category_name, u.name as seller_name
+             FROM products p
+             LEFT JOIN category c ON p.category_id = c.category_id
+             LEFT JOIN users u ON p.user_id = u.user_id
+             WHERE p.product_id = ? AND p.deleted_at IS NULL`, 
+            [req.params.id]
+        );  
         if (product.length === 0) {  
-            logger.warn('Product not found:', { productId: req.params.id });  
             return res.status(404).json({ message: 'Product not found' });  
         }  
         res.json(product[0]);  
@@ -134,15 +149,15 @@ app.get('/api/products/:id', async (req, res) => {
         logger.error('Error fetching product:', error);  
         res.status(500).json({ message: 'Error fetching product' });  
     }  
-});  
+});
 
-// 4. Create Product  
-app.post('/api/products', authenticateUser, async (req, res) => {  
+// 5. Create Product
+app.post('/api/products', async (req, res) => {  
     try {  
-        const { store_id, name, description, price, quantity, category_id, subcategory_id } = req.body;  
+        const { user_id, name, description, price, quantity, category_id, subcategory_id } = req.body;  
         const [result] = await pool.query(  
-            'INSERT INTO products (store_id, name, description, price, quantity, category_id, subcategory_id) VALUES (?, ?, ?, ?, ?, ?, ?)',  
-            [store_id, name, description, price, quantity, category_id, subcategory_id]  
+            'INSERT INTO products (user_id, name, description, price, quantity, category_id, subcategory_id) VALUES (?, ?, ?, ?, ?, ?, ?)',  
+            [user_id, name, description, price, quantity, category_id, subcategory_id]  
         );  
         logger.info('Product created successfully:', { productId: result.insertId });  
         res.status(201).json({  
@@ -153,11 +168,10 @@ app.post('/api/products', authenticateUser, async (req, res) => {
         logger.error('Error creating product:', error);  
         res.status(500).json({ message: 'Error creating product' });  
     }  
-});  
+});
 
-
-// 5. Update Product  
-app.put('/api/products/:id', authenticateUser, async (req, res) => {  
+// 6. Update Product
+app.put('/api/products/:id', async (req, res) => {  
     try {  
         const { name, description, price, quantity, category_id, subcategory_id } = req.body;  
         const [result] = await pool.query(  
@@ -165,22 +179,19 @@ app.put('/api/products/:id', authenticateUser, async (req, res) => {
             [name, description, price, quantity, category_id, subcategory_id, req.params.id]  
         );  
         if (result.affectedRows === 0) {  
-            logger.warn('Product update failed: Product not found', { productId: req.params.id });  
             return res.status(404).json({ message: 'Product not found' });  
         }  
-        logger.info('Product updated successfully:', { productId: req.params.id });  
         res.json({ message: 'Product updated successfully' });  
     } catch (error) {  
         logger.error('Error updating product:', error);  
         res.status(500).json({ message: 'Error updating product' });  
     }  
-});  
+});
 
-// 6. Add to Cart  
-app.post('/api/cart', authenticateUser, async (req, res) => {  
+// 7. Add to Cart
+app.post('/api/cart', async (req, res) => {  
     try {  
-        const { product_id, quantity } = req.body;  
-        const user_id = req.user.user_id;  
+        const { user_id, product_id, quantity } = req.body;  
 
         // Check if user has an active cart  
         let [cart] = await pool.query('SELECT * FROM carts WHERE user_id = ?', [user_id]);  
@@ -200,61 +211,78 @@ app.post('/api/cart', authenticateUser, async (req, res) => {
             [cart_id, product_id, quantity]  
         );  
 
-        logger.info('Item added to cart:', { userId: user_id, productId: product_id });  
         res.status(201).json({ message: 'Item added to cart successfully' });  
     } catch (error) {  
         logger.error('Error adding to cart:', error);  
         res.status(500).json({ message: 'Error adding to cart' });  
     }  
-});  
+});
 
-// 7. Create Order  
-app.post('/api/orders', authenticateUser, async (req, res) => {  
+// 8. Get Cart Items
+app.get('/api/cart/:userId', async (req, res) => {
+    try {
+        const [cartItems] = await pool.query(
+            `SELECT ci.*, p.name, p.price, p.user_id as seller_id
+             FROM carts c
+             JOIN cart_items ci ON c.cart_id = ci.cart_id
+             JOIN products p ON ci.product_id = p.product_id
+             WHERE c.user_id = ?`,
+            [req.params.userId]
+        );
+        res.json(cartItems);
+    } catch (error) {
+        logger.error('Error fetching cart items:', error);
+        res.status(500).json({ message: 'Error fetching cart items' });
+    }
+});
+
+// 9. Update Cart Item
+app.put('/api/cart/:cartItemId', async (req, res) => {
+    try {
+        const { quantity } = req.body;
+        const [result] = await pool.query(
+            'UPDATE cart_items SET quantity = ? WHERE cart_item_id = ?',
+            [quantity, req.params.cartItemId]
+        );
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Cart item not found' });
+        }
+        res.json({ message: 'Cart item updated successfully' });
+    } catch (error) {
+        logger.error('Error updating cart item:', error);
+        res.status(500).json({ message: 'Error updating cart item' });
+    }
+});
+
+// 10. Remove from Cart
+app.delete('/api/cart/:cartItemId', async (req, res) => {
+    try {
+        const [result] = await pool.query(
+            'DELETE FROM cart_items WHERE cart_item_id = ?',
+            [req.params.cartItemId]
+        );
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Cart item not found' });
+        }
+        res.json({ message: 'Item removed from cart successfully' });
+    } catch (error) {
+        logger.error('Error removing cart item:', error);
+        res.status(500).json({ message: 'Error removing cart item' });
+    }
+});
+
+
+// 11. Get User Orders
+app.get('/api/orders', async (req, res) => {  
     try {  
-        const { store_id, items } = req.body;  
-        const user_id = req.user.user_id;  
-
-        // Calculate total price  
-        let total_price = 0;  
-        for (const item of items) {  
-            const [product] = await pool.query('SELECT price FROM products WHERE product_id = ?', [item.product_id]);  
-            total_price += product[0].price * item.quantity;  
-        }  
-
-        // Create order  
-        const [order] = await pool.query(  
-            'INSERT INTO orders (user_id, store_id, total_price) VALUES (?, ?, ?)',  
-            [user_id, store_id, total_price]  
-        );  
-
-        // Add order items  
-        for (const item of items) {  
-            await pool.query(  
-                'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)',  
-                [order.insertId, item.product_id, item.quantity, item.price]  
-            );  
-        }  
-
-        logger.info('Order created successfully:', { orderId: order.insertId });  
-        res.status(201).json({  
-            message: 'Order created successfully',  
-            orderId: order.insertId  
-        });  
-    } catch (error) {  
-        logger.error('Error creating order:', error);  
-        res.status(500).json({ message: 'Error creating order' });  
-    }  
-});  
-
-// 8. Get User Orders  
-app.get('/api/orders', authenticateUser, async (req, res) => {  
-    try {  
+        const { user_id } = req.query;
         const [orders] = await pool.query(  
-            `SELECT o.*, oi.*   
+            `SELECT o.*, oi.*, p.name as product_name   
              FROM orders o   
              LEFT JOIN order_items oi ON o.order_id = oi.order_id   
-             WHERE o.user_id = ?`,  
-            [req.user.user_id]  
+             LEFT JOIN products p ON oi.product_id = p.product_id   
+             WHERE o.user_id = ? AND o.deleted_at IS NULL`,  
+            [user_id]  
         );  
         res.json(orders);  
     } catch (error) {  
@@ -263,290 +291,432 @@ app.get('/api/orders', authenticateUser, async (req, res) => {
     }  
 });  
 
-// 9. Create Store  
-app.post('/api/stores', authenticateUser, async (req, res) => {  
-    try {  
-        const { name, description, address } = req.body;  
-        const owner_id = req.user.user_id;  
+// 12. Get Order by ID
+app.get('/api/orders/:orderId', async (req, res) => {
+    try {
+        const [order] = await pool.query(
+            `SELECT o.*, oi.*, p.name as product_name, u.name as seller_name
+             FROM orders o
+             JOIN order_items oi ON o.order_id = oi.order_id
+             JOIN products p ON oi.product_id = p.product_id
+             JOIN users u ON p.user_id = u.user_id
+             WHERE o.order_id = ? AND o.deleted_at IS NULL`,
+            [req.params.orderId]
+        );
+        
+        if (order.length === 0) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.json(order);
+    } catch (error) {
+        logger.error('Error fetching order:', error);
+        res.status(500).json({ message: 'Error fetching order' });
+    }
+});
 
-        const [result] = await pool.query(  
-            'INSERT INTO stores (owner_id, name, description, address) VALUES (?, ?, ?, ?)',  
-            [owner_id, name, description, address]  
-        );  
+// 13. Create Order
+app.post('/api/orders', async (req, res) => {
+    try {
+        const { user_id, items, total_price } = req.body;
+        
+        // Start transaction
+        const connection = await pool.getConnection();
+        await connection.beginTransaction();
 
-        logger.info('Store created successfully:', { storeId: result.insertId });  
-        res.status(201).json({  
-            message: 'Store created successfully',  
-            storeId: result.insertId  
-        });  
-    } catch (error) {  
-        logger.error('Error creating store:', error);  
-        res.status(500).json({ message: 'Error creating store' });  
-    }  
-});  
+        try {
+            // Create order
+            const [order] = await connection.query(
+                'INSERT INTO orders (user_id, total_price) VALUES (?, ?)',
+                [user_id, total_price]
+            );
 
-// 10. Update Store  
-app.put('/api/stores/:id', authenticateUser, async (req, res) => {  
-    try {  
-        const { name, description, address } = req.body;  
-        const [result] = await pool.query(  
-            'UPDATE stores SET name = ?, description = ?, address = ? WHERE store_id = ? AND owner_id = ?',  
-            [name, description, address, req.params.id, req.user.user_id]  
-        );  
+            // Add order items
+            for (const item of items) {
+                await connection.query(
+                    'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)',
+                    [order.insertId, item.product_id, item.quantity, item.price]
+                );
 
-        if (result.affectedRows === 0) {  
-            return res.status(404).json({ message: 'Store not found or unauthorized' });  
-        }  
+                // Update product quantity
+                await connection.query(
+                    'UPDATE products SET quantity = quantity - ? WHERE product_id = ?',
+                    [item.quantity, item.product_id]
+                );
+            }
 
-        logger.info('Store updated successfully:', { storeId: req.params.id });  
-        res.json({ message: 'Store updated successfully' });  
-    } catch (error) {  
-        logger.error('Error updating store:', error);  
-        res.status(500).json({ message: 'Error updating store' });  
-    }  
-});  
+            // Clear cart after successful order
+            await connection.query(
+                'DELETE ci FROM cart_items ci JOIN carts c ON ci.cart_id = c.cart_id WHERE c.user_id = ?',
+                [user_id]
+            );
 
-// 11. Create Review  
-app.post('/api/reviews', authenticateUser, async (req, res) => {  
-    try {  
-        const { store_id, rating, comment } = req.body;  
-        const user_id = req.user.user_id;  
+            await connection.commit();
+            res.status(201).json({
+                message: 'Order created successfully',
+                orderId: order.insertId
+            });
+        } catch (error) {
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
+        }
+    } catch (error) {
+        logger.error('Error creating order:', error);
+        res.status(500).json({ message: 'Error creating order' });
+    }
+});
 
-        // Validate rating  
-        if (rating < 1 || rating > 5) {  
-            return res.status(400).json({ message: 'Rating must be between 1 and 5' });  
-        }  
+// 14. Update Order Status
+app.put('/api/orders/:orderId', async (req, res) => {
+    try {
+        const { order_status } = req.body;
+        const [result] = await pool.query(
+            'UPDATE orders SET order_status = ? WHERE order_id = ?',
+            [order_status, req.params.orderId]
+        );
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.json({ message: 'Order status updated successfully' });
+    } catch (error) {
+        logger.error('Error updating order:', error);
+        res.status(500).json({ message: 'Error updating order' });
+    }
+});
 
-        const [result] = await pool.query(  
-            'INSERT INTO reviews (store_id, user_id, rating, comment) VALUES (?, ?, ?, ?)',  
-            [store_id, user_id, rating, comment]  
-        );  
+// 15. Delete Order (Soft Delete)
+app.delete('/api/orders/:orderId', async (req, res) => {
+    try {
+        const [result] = await pool.query(
+            'UPDATE orders SET deleted_at = CURRENT_TIMESTAMP WHERE order_id = ?',
+            [req.params.orderId]
+        );
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        res.json({ message: 'Order deleted successfully' });
+    } catch (error) {
+        logger.error('Error deleting order:', error);
+        res.status(500).json({ message: 'Error deleting order' });
+    }
+});
 
-        logger.info('Review created successfully:', { reviewId: result.insertId });  
-        res.status(201).json({  
-            message: 'Review created successfully',  
-            reviewId: result.insertId  
-        });  
-    } catch (error) {  
-        logger.error('Error creating review:', error);  
-        res.status(500).json({ message: 'Error creating review' });  
-    }  
-});  
+// 16. Get User Recommendations
+app.get('/api/recommendations/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const [recommendations] = await pool.query(
+            `SELECT DISTINCT p.*, u.name as seller_name 
+             FROM products p
+             JOIN users u ON p.user_id = u.user_id
+             JOIN category c ON p.category_id = c.category_id
+             WHERE c.category_id IN (
+                 SELECT DISTINCT p2.category_id
+                 FROM orders o
+                 JOIN order_items oi ON o.order_id = oi.order_id
+                 JOIN products p2 ON oi.product_id = p2.product_id
+                 WHERE o.user_id = ?
+             )
+             AND p.deleted_at IS NULL
+             LIMIT 10`,
+            [userId]
+        );
+        res.json(recommendations);
+    } catch (error) {
+        logger.error('Error fetching recommendations:', error);
+        res.status(500).json({ message: 'Error fetching recommendations' });
+    }
+});
 
-// 12. Get Store Reviews  
-app.get('/api/stores/:storeId/reviews', async (req, res) => {  
-    try {  
-        const [reviews] = await pool.query(  
-            `SELECT r.*, u.name as user_name   
-             FROM reviews r   
-             JOIN users u ON r.user_id = u.user_id   
-             WHERE r.store_id = ?  
-             ORDER BY r.created_at DESC`,  
-            [req.params.storeId]  
-        );  
-        res.json(reviews);  
-    } catch (error) {  
-        logger.error('Error fetching reviews:', error);  
-        res.status(500).json({ message: 'Error fetching reviews' });  
-    }  
-});  
+// 17. Get All Stores
+app.get('/api/store', async (req, res) => {
+    try {
+        const [stores] = await pool.query(
+            `SELECT u.user_id, u.store_name, u.store_description, u.store_address, 
+                    u.store_created_at, u.store_number, u.store_email
+             FROM users u 
+             WHERE u.store_name IS NOT NULL AND u.deleted_at IS NULL`
+        );
+        res.json(stores);
+    } catch (error) {
+        logger.error('Error fetching stores:', error);
+        res.status(500).json({ message: 'Error fetching stores' });
+    }
+});
 
-// 13. Get User Notifications  
-app.get('/api/notifications', authenticateUser, async (req, res) => {  
-    try {  
-        const [notifications] = await pool.query(  
-            'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC',  
-            [req.user.user_id]  
-        );  
+// 18. Get Store by User ID
+app.get('/api/store/:userId', async (req, res) => {
+    try {
+        const [store] = await pool.query(
+            `SELECT u.user_id, u.store_name, u.store_description, u.store_address, 
+                    u.store_created_at, u.store_number, u.store_email,
+                    (SELECT COUNT(*) FROM products p WHERE p.user_id = u.user_id) as total_products,
+                    (SELECT AVG(r.rating) FROM reviews r WHERE r.seller_id = u.user_id) as average_rating
+             FROM users u 
+             WHERE u.user_id = ? AND u.store_name IS NOT NULL AND u.deleted_at IS NULL`,
+            [req.params.userId]
+        );
+        
+        if (store.length === 0) {
+            return res.status(404).json({ message: 'Store not found' });
+        }
+        res.json(store[0]);
+    } catch (error) {
+        logger.error('Error fetching store:', error);
+        res.status(500).json({ message: 'Error fetching store' });
+    }
+});
 
-        // Mark notifications as read  
-        await pool.query(  
-            'UPDATE notifications SET status = "read" WHERE user_id = ? AND status = "unread"',  
-            [req.user.user_id]  
-        );  
+// 19. Create Store Review
+app.post('/api/reviews', async (req, res) => {
+    try {
+        const { user_id, seller_id, rating, comment } = req.body;
 
-        res.json(notifications);  
-    } catch (error) {  
-        logger.error('Error fetching notifications:', error);  
-        res.status(500).json({ message: 'Error fetching notifications' });  
-    }  
-});  
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+        }
 
-// 14. Search Products and Stores  
-app.get('/api/search', async (req, res) => {  
-    try {  
-        const { query, type = 'all', category_id, min_price, max_price } = req.query;  
-        let sql = '';  
-        let params = [];  
+        const [result] = await pool.query(
+            'INSERT INTO reviews (user_id, seller_id, rating, comment) VALUES (?, ?, ?, ?)',
+            [user_id, seller_id, rating, comment]
+        );
 
-        if (type === 'products' || type === 'all') {  
-            sql += `  
-                SELECT 'product' as type, p.*, c.name as category_name   
-                FROM products p  
-                JOIN category c ON p.category_id = c.category_id  
-                WHERE p.name LIKE ? OR p.description LIKE ?  
-            `;  
-            if (category_id) {  
-                sql += ' AND p.category_id = ?';  
-                params.push(category_id);  
-            }  
-            if (min_price) {  
-                sql += ' AND p.price >= ?';  
-                params.push(min_price);  
-            }  
-            if (max_price) {  
-                sql += ' AND p.price <= ?';  
-                params.push(max_price);  
-            }  
-        }  
+        res.status(201).json({
+            message: 'Review created successfully',
+            reviewId: result.insertId
+        });
+    } catch (error) {
+        logger.error('Error creating review:', error);
+        res.status(500).json({ message: 'Error creating review' });
+    }
+});
 
-        if (type === 'stores' || type === 'all') {  
-            if (sql) sql += ' UNION ';  
-            sql += `  
-                SELECT 'store' as type, s.*   
-                FROM stores s   
-                WHERE s.name LIKE ? OR s.description LIKE ?  
-            `;  
-        }  
+// 20. Get Store Reviews
+app.get('/api/store/:sellerId/reviews', async (req, res) => {
+    try {
+        const [reviews] = await pool.query(
+            `SELECT r.*, u.name as reviewer_name
+             FROM reviews r
+             JOIN users u ON r.user_id = u.user_id
+             WHERE r.seller_id = ?
+             ORDER BY r.created_at DESC`,
+            [req.params.sellerId]
+        );
+        res.json(reviews);
+    } catch (error) {
+        logger.error('Error fetching reviews:', error);
+        res.status(500).json({ message: 'Error fetching reviews' });
+    }
+});
 
-        const searchQuery = `%${query}%`;  
-        params = [searchQuery, searchQuery, ...params];  
+// 21. Upload Photo
+app.post('/api/upload/photo', async (req, res) => {
+    try {
+        // Implement photo upload logic here
+        // Example: Use multer for file upload and save the file path in the database
+        res.status(201).json({ message: 'Photo uploaded successfully' });
+    } catch (error) {
+        logger.error('Error uploading photo:', error);
+        res.status(500).json({ message: 'Error uploading photo' });
+    }
+});
 
-        const [results] = await pool.query(sql, params);  
+// 22. Get Photo by ID
+app.get('/api/photo/:photoId', async (req, res) => {
+    try {
+        // Implement logic to retrieve photo metadata or URL from the database
+        res.json({ photo: 'photo_url' });
+    } catch (error) {
+        logger.error('Error fetching photo:', error);
+        res.status(500).json({ message: 'Error fetching photo' });
+    }
+});
 
-        // Log search query  
-        if (req.user) {  
-            await pool.query(  
-                'INSERT INTO search_history (user_id, search_query) VALUES (?, ?)',  
-                [req.user.user_id, query]  
-            );  
-        }  
+// 23. Delete Photo
+app.delete('/api/photo/:photoId', async (req, res) => {
+    try {
+        // Implement logic to delete photo metadata and file from storage
+        res.json({ message: 'Photo deleted successfully' });
+    } catch (error) {
+        logger.error('Error deleting photo:', error);
+        res.status(500).json({ message: 'Error deleting photo' });
+    }
+});
 
-        res.json(results);  
-    } catch (error) {  
-        logger.error('Error performing search:', error);  
-        res.status(500).json({ message: 'Error performing search' });  
-    }  
-});  
+// 24. Update Photo Metadata
+app.put('/api/photo/:photoId/metadata', async (req, res) => {
+    try {
+        const { metadata } = req.body;
+        // Implement logic to update photo metadata in the database
+        res.json({ message: 'Photo metadata updated successfully' });
+    } catch (error) {
+        logger.error('Error updating photo metadata:', error);
+        res.status(500).json({ message: 'Error updating photo metadata' });
+    }
+});
 
-// 15. Add to Wishlist  
-app.post('/api/wishlist', authenticateUser, async (req, res) => {  
-    try {  
-        const { product_id } = req.body;  
-        const user_id = req.user.user_id;  
+// 25. Add to Wishlist
+app.post('/api/wishlist', async (req, res) => {
+    try {
+        const { user_id, product_id } = req.body;
 
-        await pool.query(  
-            'INSERT INTO wishlist (user_id, product_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE created_at = CURRENT_TIMESTAMP',  
-            [user_id, product_id]  
-        );  
+        await pool.query(
+            'INSERT INTO wishlist (user_id, product_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE created_at = CURRENT_TIMESTAMP',
+            [user_id, product_id]
+        );
 
-        logger.info('Item added to wishlist:', { userId: user_id, productId: product_id });  
-        res.status(201).json({ message: 'Item added to wishlist successfully' });  
-    } catch (error) {  
-        logger.error('Error adding to wishlist:', error);  
-        res.status(500).json({ message: 'Error adding to wishlist' });  
-    }  
-});  
+        res.status(201).json({ message: 'Item added to wishlist successfully' });
+    } catch (error) {
+        logger.error('Error adding to wishlist:', error);
+        res.status(500).json({ message: 'Error adding to wishlist' });
+    }
+});
 
-// 16. Get User's Wishlist  
-app.get('/api/wishlist', authenticateUser, async (req, res) => {  
-    try {  
-        const [wishlist] = await pool.query(  
-            `SELECT w.*, p.*, s.name as store_name   
-             FROM wishlist w   
-             JOIN products p ON w.product_id = p.product_id   
-             JOIN stores s ON p.store_id = s.store_id   
-             WHERE w.user_id = ?`,  
-            [req.user.user_id]  
-        );  
-        res.json(wishlist);  
-    } catch (error) {  
-        logger.error('Error fetching wishlist:', error);  
-        res.status(500).json({ message: 'Error fetching wishlist' });  
-    }  
-});  
+// 26. Get User's Wishlist
+app.get('/api/wishlist/:userId', async (req, res) => {
+    try {
+        const [wishlist] = await pool.query(
+            `SELECT w.*, p.*, u.store_name
+             FROM wishlist w
+             JOIN products p ON w.product_id = p.product_id
+             JOIN users u ON p.user_id = u.user_id
+             WHERE w.user_id = ?`,
+            [req.params.userId]
+        );
+        res.json(wishlist);
+    } catch (error) {
+        logger.error('Error fetching wishlist:', error);
+        res.status(500).json({ message: 'Error fetching wishlist' });
+    }
+});
 
-// 17. Get Categories with Subcategories  
-app.get('/api/categories', async (req, res) => {  
-    try {  
-        const [categories] = await pool.query(  
-            `SELECT c.*,   
-             (SELECT JSON_ARRAYAGG(  
-                JSON_OBJECT('id', s.subcategory_id, 'name', s.name, 'description', s.description)  
-             )   
-             FROM subcategories s   
-             WHERE s.category_id = c.category_id) as subcategories   
-             FROM category c`  
-        );  
-        res.json(categories);  
-    } catch (error) {  
-        logger.error('Error fetching categories:', error);  
-        res.status(500).json({ message: 'Error fetching categories' });  
-    }  
-});  
+// 27. Get Categories with Subcategories
+app.get('/api/categories', async (req, res) => {
+    try {
+        const [categories] = await pool.query(
+            `SELECT c.*, 
+             (SELECT JSON_ARRAYAGG(
+                JSON_OBJECT('id', s.subcategory_id, 'name', s.name, 'description', s.description)
+             ) 
+             FROM subcategories s 
+             WHERE s.category_id = c.category_id) as subcategories 
+             FROM category c`
+        );
+        res.json(categories);
+    } catch (error) {
+        logger.error('Error fetching categories:', error);
+        res.status(500).json({ message: 'Error fetching categories' });
+    }
+});
 
-// 18. Get Store Analytics  
-app.get('/api/stores/:storeId/analytics', authenticateUser, async (req, res) => {  
-    try {  
-        const store_id = req.params.storeId;  
+// 28. Search Products and Stores
+app.get('/api/search', async (req, res) => {
+    try {
+        const { query, type = 'all', category_id, min_price, max_price } = req.query;
+        let sql = '';
+        let params = [];
 
-        // Verify store ownership  
-        const [store] = await pool.query(  
-            'SELECT * FROM stores WHERE store_id = ? AND owner_id = ?',  
-            [store_id, req.user.user_id]  
-        );  
+        if (type === 'products' || type === 'all') {
+            sql += `
+                SELECT 'product' as type, p.*, c.name as category_name 
+                FROM products p
+                JOIN category c ON p.category_id = c.category_id
+                WHERE (p.name LIKE ? OR p.description LIKE ?)
+            `;
+            params.push(`%${query}%`, `%${query}%`);
 
-        if (store.length === 0) {  
-            return res.status(403).json({ message: 'Unauthorized access to store analytics' });  
-        }  
+            if (category_id) {
+                sql += ' AND p.category_id = ?';
+                params.push(category_id);
+            }
+            if (min_price) {
+                sql += ' AND p.price >= ?';
+                params.push(min_price);
+            }
+            if (max_price) {
+                sql += ' AND p.price <= ?';
+                params.push(max_price);
+            }
+        }
 
-        // Get various analytics  
-        const [orderStats] = await pool.query(  
-            `SELECT   
-                COUNT(*) as total_orders,  
-                SUM(total_price) as total_revenue,  
-                AVG(total_price) as average_order_value  
-             FROM orders   
-             WHERE store_id = ?`,  
-            [store_id]  
-        );  
+        if (type === 'stores' || type === 'all') {
+            if (sql) sql += ' UNION ';
+            sql += `
+                SELECT 'store' as type, u.user_id, u.store_name, u.store_description, u.store_address 
+                FROM users u
+                WHERE (u.store_name LIKE ? OR u.store_description LIKE ?)
+            `;
+            params.push(`%${query}%`, `%${query}%`);
+        }
 
-        const [productStats] = await pool.query(  
-            `SELECT   
-                COUNT(*) as total_products,  
-                AVG(price) as average_price,  
-                SUM(quantity) as total_inventory  
-             FROM products   
-             WHERE store_id = ?`,  
-            [store_id]  
-        );  
+        const [results] = await pool.query(sql, params);
 
-        const [reviewStats] = await pool.query(  
-            `SELECT   
-                COUNT(*) as total_reviews,  
-                AVG(rating) as average_rating  
-             FROM reviews   
-             WHERE store_id = ?`,  
-            [store_id]  
-        );  
+        res.json(results);
+    } catch (error) {
+        logger.error('Error performing search:', error);
+        res.status(500).json({ message: 'Error performing search' });
+    }
+});
 
-        res.json({  
-            orderStats: orderStats[0],  
-            productStats: productStats[0],  
-            reviewStats: reviewStats[0]  
-        });  
-    } catch (error) {  
-        logger.error('Error fetching store analytics:', error);  
-        res.status(500).json({ message: 'Error fetching store analytics' });  
-    }  
-});  
+// 29. Get Store Analytics
+app.get('/api/stores/:storeId/analytics', async (req, res) => {
+    try {
+        const store_id = req.params.storeId;
 
+        // Verify store ownership
+        const [store] = await pool.query(
+            'SELECT * FROM users WHERE user_id = ? AND store_name IS NOT NULL',
+            [store_id]
+        );
 
-// Error Handling Middleware  
-app.use((err, req, res, next) => {  
-    logger.error('Unhandled error:', err);  
-    res.status(500).json({ message: 'Internal server error' });  
-});  
+        if (store.length === 0) {
+            return res.status(403).json({ message: 'Unauthorized access to store analytics' });
+        }
+
+        // Get various analytics
+        const [orderStats] = await pool.query(
+            `SELECT 
+                COUNT(*) as total_orders,
+                SUM(total_price) as total_revenue,
+                AVG(total_price) as average_order_value
+             FROM orders 
+             WHERE user_id = ?`,
+            [store_id]
+        );
+
+        const [productStats] = await pool.query(
+            `SELECT 
+                COUNT(*) as total_products,
+                AVG(price) as average_price,
+                SUM(quantity) as total_inventory
+             FROM products 
+             WHERE user_id = ?`,
+            [store_id]
+        );
+
+        const [reviewStats] = await pool.query(
+            `SELECT 
+                COUNT(*) as total_reviews,
+                AVG(rating) as average_rating
+             FROM reviews 
+             WHERE seller_id = ?`,
+            [store_id]
+        );
+
+        res.json({
+            orderStats: orderStats[0],
+            productStats: productStats[0],
+            reviewStats: reviewStats[0]
+        });
+    } catch (error) {
+        logger.error('Error fetching store analytics:', error);
+        res.status(500).json({ message: 'Error fetching store analytics' });
+    }
+});
+
 
 // Start Server  
 app.listen(PORT, '0.0.0.0', () => {  
