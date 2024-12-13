@@ -1,4 +1,3 @@
-// loadModel.js  
 const tf = require('@tensorflow/tfjs-node');  
 const express = require('express');  
 const cors = require('cors');  
