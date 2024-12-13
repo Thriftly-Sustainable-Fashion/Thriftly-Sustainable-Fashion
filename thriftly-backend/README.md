@@ -179,18 +179,6 @@ The Thriftly mobile application interacts with the backend API to provide users 
 
 ---
 
-## Contributing
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## Team Members
-- [Member 1] - Cloud Infrastructure Engineer
-- [Member 2] - Backend Developer
-- [Member 3] - ML Engineer
-
 ## Contact
 Project Link: https://github.com/Thriftly-Sustainable-Fashion/Thriftly-Sustainable-Fashion.git
 
