@@ -2,7 +2,6 @@ package com.example.thriftlyfashion.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -45,112 +44,82 @@ class StartActivity : AppCompatActivity() {
         // ====== Seeder ======
 //        val dbHelper = DatabaseHelper(this)
 //
-//        val dataProduct = listOf(
-//            Product(
-//                productId = "P001",
-//                storeId = 101,
-//                images = "https://example.com/image1.jpg, https://example.com/image2.jpg",
-//                name = "Kemeja Kasual",
-//                description = "Kemeja kasual dengan bahan katun yang nyaman.",
-//                price = 250000.0,
-//                quantity = 15,
-//                category = "Kemeja",
-//                color = "Putih",
-//                size = "L",
-//                createdAt = "2024-12-07"
-//            ),
-//            Product(
-//                productId = "P002",
-//                storeId = 102,
-//                images = "https://example.com/image3.jpg, https://example.com/image4.jpg",
-//                name = "Jaket Denim",
-//                description = "Jaket denim klasik yang stylish.",
-//                price = 450000.0,
-//                quantity = 20,
-//                category = "Jaket",
-//                color = "Biru",
-//                size = "M",
-//                createdAt = "2024-12-07"
-//            ),
-//            Product(
-//                productId = "P003",
-//                storeId = 103,
-//                images = "https://example.com/image5.jpg, https://example.com/image6.jpg",
-//                name = "Celana Jeans",
-//                description = "Celana jeans slim fit dengan bahan stretch.",
-//                price = 300000.0,
-//                quantity = 30,
-//                category = "Celana",
-//                color = "Hitam",
-//                size = "32",
-//                createdAt = "2024-12-07"
-//            ),
-//            Product(
-//                productId = "P004",
-//                storeId = 104,
-//                images = "https://example.com/image7.jpg, https://example.com/image8.jpg",
-//                name = "Kaos Polos",
-//                description = "Kaos polos sederhana dan nyaman.",
-//                price = 100000.0,
-//                quantity = 50,
-//                category = "Kaos",
-//                color = "Abu-abu",
-//                size = "XL",
-//                createdAt = "2024-12-07"
-//            ),
-//            Product(
-//                productId = "P005",
-//                storeId = 105,
-//                images = "https://example.com/image9.jpg, https://example.com/image10.jpg",
-//                name = "Sepatu Sneakers",
-//                description = "Sepatu sneakers trendi untuk sehari-hari.",
-//                price = 600000.0,
-//                quantity = 10,
-//                category = "Sepatu",
-//                color = "Putih",
-//                size = "42",
-//                createdAt = "2024-12-07"
-//            ),
-//            Product(
-//                productId = "P006",
-//                storeId = 106,
-//                images = "https://example.com/image11.jpg, https://example.com/image12.jpg",
-//                name = "Blazer Formal",
-//                description = "Blazer formal untuk acara penting.",
-//                price = 800000.0,
-//                quantity = 5,
-//                category = "Blazer",
-//                color = "Navy",
-//                size = "L",
-//                createdAt = "2024-12-07"
-//            ),
-//            Product(
-//                productId = "P007",
-//                storeId = 107,
-//                images = "https://example.com/image13.jpg, https://example.com/image14.jpg",
-//                name = "Topi Trucker",
-//                description = "Topi trucker untuk gaya kasual.",
-//                price = 75000.0,
-//                quantity = 25,
-//                category = "Aksesoris",
-//                color = "Hitam",
-//                size = "All Size",
-//                createdAt = "2024-12-07"
-//            ),
-//            Product(
-//                productId = "P008",
-//                storeId = 108,
-//                images = "https://example.com/image15.jpg, https://example.com/image16.jpg",
-//                name = "Sweater Rajut",
-//                description = "Sweater rajut hangat untuk musim dingin.",
-//                price = 350000.0,
-//                quantity = 12,
-//                category = "Sweater",
-//                color = "Merah Maroon",
-//                size = "L",
-//                createdAt = "2024-12-07"
-//            )
+//        private fun getDummyProducts(): List<Product> {
+//    return listOf(
+//        Product(
+//            productId = 1,
+//            name = "Kemeja Flanel Bekas",
+//            description = "Kemeja flanel bekas dengan kualitas terbaik. Cocok untuk acara santai.",
+//            category = "Fashion Pria",
+//            price = 50000.0,
+//            stock = 10,
+//            image = "https://images.pexels.com/photos/13316724/pexels-photo-13316724.jpeg?auto=compress&cs=tinysrgb&w=600"
+//        ),
+//        Product(
+//            productId = 2,
+//            name = "Kaos Polos Hitam",
+//            description = "Kaos polos hitam bekas, nyaman dipakai sehari-hari.",
+//            category = "Fashion Pria",
+//            price = 30000.0,
+//            stock = 15,
+//            image = "https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg?auto=compress&cs=tinysrgb&w=600"
+//        ),
+//        Product(
+//            productId = 3,
+//            name = "Dress Cantik Bekas",
+//            description = "Dress cantik untuk acara formal atau semi-formal.",
+//            category = "Fashion Wanita",
+//            price = 75000.0,
+//            stock = 8,
+//            image = "https://images.pexels.com/photos/19852011/pexels-photo-19852011/free-photo-of-kota-mode-fashion-fesyen.jpeg?auto=compress&cs=tinysrgb&w=600"
+//        ),
+//        Product(
+//            productId = 4,
+//            name = "Jeans Sobek Stylish",
+//            description = "Jeans bekas dengan desain sobek yang stylish.",
+//            category = "Fashion Pria",
+//            price = 120000.0,
+//            stock = 12,
+//            image = "https://images.pexels.com/photos/3324443/pexels-photo-3324443.jpeg?auto=compress&cs=tinysrgb&w=600"
+//        ),
+//        Product(
+//            productId = 5,
+//            name = "Tas Kulit Bekas",
+//            description = "Tas kulit berkualitas, cocok untuk kebutuhan sehari-hari.",
+//            category = "Aksesoris",
+//            price = 150000.0,
+//            stock = 5,
+//            image = "https://images.pexels.com/photos/27035625/pexels-photo-27035625/free-photo-of-stiletto-dan-carteras.jpeg?auto=compress&cs=tinysrgb&w=600"
+//        ),
+//        Product(
+//            productId = 6,
+//            name = "Sepatu Sneakers Bekas",
+//            description = "Sneakers bekas yang nyaman dan stylish.",
+//            category = "Fashion Pria",
+//            price = 200000.0,
+//            stock = 7,
+//            image = "https://images.pexels.com/photos/6046212/pexels-photo-6046212.jpeg?auto=compress&cs=tinysrgb&w=600"
+//        ),
+//        Product(
+//            productId = 7,
+//            name = "Jaket Denim Bekas",
+//            description = "Jaket denim bekas dengan kualitas premium.",
+//            category = "Fashion Pria",
+//            price = 180000.0,
+//            stock = 6,
+//            image = "https://images.pexels.com/photos/29738017/pexels-photo-29738017.jpeg?auto=compress&cs=tinysrgb&w=600"
+//        ),
+//        Product(
+//            productId = 8,
+//            name = "Rok Mini Bekas",
+//            description = "Rok mini bekas yang modis dan nyaman dipakai.",
+//            category = "Fashion Wanita",
+//            price = 60000.0,
+//            stock = 9,
+//            image = "https://images.pexels.com/photos/6069974/pexels-photo-6069974.jpeg?auto=compress&cs=tinysrgb&w=600"
 //        )
+//    )
+//}
 //
 //        dataProduct.forEach { product ->
 //            val result = dbHelper.insertProduct(

@@ -30,9 +30,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.profile.ProfileDetailActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.search.SearchActivity"
             android:exported="false" />
         <activity

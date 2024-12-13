@@ -74,18 +74,20 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 if (response.isSuccessful && response.body()?.message == "Login successful") {
-                    val token = response.body()?.token
-                    val userId = response.body()?.userId
+                    val loginResponse = response.body()
+                    val token = loginResponse?.token
+                    val user = loginResponse?.user
                     val sharedPrefManager = SharedPrefManager(this@LoginActivity)
 
-                    token?.let { sharedPrefManager.saveToken(it)}
-                    userId?.let { sharedPrefManager.saveUserId(it)}
-
-                    Log.e("UserId", "id = $userId")
+                    token?.let { sharedPrefManager.saveToken(it) }
+                    user?.let {
+                        sharedPrefManager.saveUserId(it.userId)
+                        sharedPrefManager.saveUserName(it.name)
+                        sharedPrefManager.saveUserEmail(it.email)
+                        sharedPrefManager.saveUserPhoneNumber(it.phoneNumber)
+                    }
 
                     Toast.makeText(this@LoginActivity, "Login berhasil!", Toast.LENGTH_SHORT).show()
-
-                    checkTokenStatus()
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()

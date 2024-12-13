@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.thriftlyfashion.R
 
-class ShopListAdapter(private val context: Context, private val itemList: List<Int>) :
+class ShopListAdapter(private val context: Context, private val itemList: List<String>) :
     RecyclerView.Adapter<ShopListAdapter.ShopViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopViewHolder {
@@ -18,7 +19,12 @@ class ShopListAdapter(private val context: Context, private val itemList: List<I
 
     override fun onBindViewHolder(holder: ShopViewHolder, position: Int) {
         val productImage = holder.productImage
-        productImage.setImageResource(itemList[position])
+
+        Glide.with(context)
+            .load(itemList[position])
+            .placeholder(R.drawable.ic_shop)
+            .error(R.drawable.ic_shop)
+            .into(productImage)
     }
 
     override fun getItemCount(): Int {
@@ -29,4 +35,3 @@ class ShopListAdapter(private val context: Context, private val itemList: List<I
         val productImage: ImageView = view.findViewById(R.id.product_image)
     }
 }
-

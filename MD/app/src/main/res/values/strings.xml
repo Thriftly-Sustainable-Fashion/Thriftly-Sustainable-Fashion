@@ -113,7 +113,7 @@
     <string name="label_birth_day">Birth Day</string>
     <string name="hint_birth_date">Birth date</string>
     <string name="label_phone_number">Phone Number</string>
-    <string name="hint_nomor_telepon">Nomor Telepon</string>
+    <string name="hint_nomor_telepon">Phone Number</string>
     <string name="btn_simpan_profile">Simpan</string>
     <string name="CD_imageProfile">Gambar Foto Profile User</string>
     <string name="title_ubah_profile">Ubah Profile</string>
@@ -154,6 +154,8 @@
     <string name="toko_saya">Toko Saya</string>
     <string name="CD_ic_edit_product">tombol untuk melakukan edit produk</string>
     <string name="CD_ic_delete_product">Tombol untuk melakukan delete produk</string>
+    <string name="CD_ic_visibility">Icon untuk memunculkan text password agar dapat dibaca</string>
+    <string name="txtFeatureUnavailable">Fitur ini belum tersedia</string>
 
     <string-array name="country_codes">
         <item>+62</item>

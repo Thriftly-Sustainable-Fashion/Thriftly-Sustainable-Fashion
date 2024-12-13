@@ -102,27 +102,6 @@ class ProductDetailActivity : AppCompatActivity() {
                 }
             })
         }
-
-
-        val productList = getDummyProductList()
-
-        val recyclerView: RecyclerView = findViewById(R.id.id_recomendationProduct)
-        val adapter = ProductListAdapter(this, productList)
-
-        val productLayoutManager = FlexboxLayoutManager(this)
-        productLayoutManager.flexWrap = FlexWrap.WRAP
-        productLayoutManager.flexDirection = FlexDirection.ROW
-        productLayoutManager.justifyContent = JustifyContent.SPACE_BETWEEN
-        productLayoutManager.alignItems = AlignItems.CENTER
-
-        recyclerView.setPadding(20, 20, 20, 20)
-
-        recyclerView.layoutManager = productLayoutManager
-        recyclerView.setHasFixedSize(true)
-        recyclerView.isNestedScrollingEnabled = false
-
-        recyclerView.adapter = adapter
-        adjustRecyclerViewForScreenSize(recyclerView)
     }
 
     private fun fetchProductDetails(productId: Int) {
@@ -173,62 +152,5 @@ class ProductDetailActivity : AppCompatActivity() {
                 .placeholder(R.drawable.image)
                 .into(productImage)
         }
-    }
-
-    fun getDummyProductList(): List<ProductCard> {
-        return listOf(
-            ProductCard(
-                productId = 1,
-                name = "T-Shirt Kasual",
-                category = "Pakaian Pria",
-                price = 150000.0,
-                image = "https://example.com/images/tshirt_kasual.jpg"
-            ),
-            ProductCard(
-                productId = 2,
-                name = "Celana Jeans",
-                category = "Pakaian Pria",
-                price = 200000.0,
-                image = "https://example.com/images/celana_jeans.jpg"
-            ),
-            ProductCard(
-                productId = 3,
-                name = "Sepatu Sneakers",
-                category = "Sepatu Pria",
-                price = 350000.0,
-                image = "https://example.com/images/sepatu_sneakers.jpg"
-            ),
-            ProductCard(
-                productId = 4,
-                name = "Dress Wanita",
-                category = "Pakaian Wanita",
-                price = 250000.0,
-                image = "https://example.com/images/dress_wanita.jpg"
-            ),
-            ProductCard(
-                productId = 5,
-                name = "Tas Ransel",
-                category = "Aksesori",
-                price = 120000.0,
-                image = "https://example.com/images/tas_ransel.jpg"
-            )
-        )
-    }
-
-    private fun adjustRecyclerViewForScreenSize(recyclerView: RecyclerView) {
-        val displayMetrics = resources.displayMetrics
-        val screenWidth = displayMetrics.widthPixels
-
-        val columnCount = when {
-            screenWidth >= 1800 -> 4
-            screenWidth >= 1200 -> 3
-            screenWidth >= 800 -> 2
-            else -> 1
-        }
-
-        val itemWidth = (screenWidth / columnCount) - 20
-        val layoutParams = recyclerView.layoutParams
-        layoutParams.width = itemWidth * columnCount
-        recyclerView.layoutParams = layoutParams
     }
 }

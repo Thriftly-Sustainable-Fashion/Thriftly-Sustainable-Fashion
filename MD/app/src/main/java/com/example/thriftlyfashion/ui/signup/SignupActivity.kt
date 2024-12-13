@@ -55,6 +55,7 @@ class SignupActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.email);
         val etPassword = findViewById<EditText>(R.id.etPassword);
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirPassword);
+        val etNumberPhone = findViewById<EditText>(R.id.etNumberPhone);
 
         ivTogglePassword.setOnClickListener {
             togglePasswordVisibility(etPassword, ivTogglePassword);
@@ -69,6 +70,12 @@ class SignupActivity : AppCompatActivity() {
             val email = etEmail.text.toString().trim();
             val password = etPassword.text.toString();
             val confirmPassword = etConfirmPassword.text.toString();
+            val numberPhone = etNumberPhone.text.toString().trim();
+
+            if (numberPhone.isEmpty() || numberPhone.length < 10 || !numberPhone.matches(Regex("^[0-9]+$"))) {
+                Toast.makeText(this, "Nomor telepon tidak valid!", Toast.LENGTH_SHORT).show();
+                return@setOnClickListener;
+            }
 
             if (name.isEmpty()) {
                 Toast.makeText(this, "Nama tidak boleh kosong!", Toast.LENGTH_SHORT).show();
@@ -90,7 +97,7 @@ class SignupActivity : AppCompatActivity() {
                 return@setOnClickListener;
             }
 
-            val signupRequest = SignupRequest(name, email, password, false);
+            val signupRequest = SignupRequest(name, email, password, numberPhone);
 
             CoroutineScope(Dispatchers.Main).launch {
                 try {

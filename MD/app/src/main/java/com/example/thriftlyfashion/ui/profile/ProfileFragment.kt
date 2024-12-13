@@ -7,11 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.remote.UserSession
+import com.example.thriftlyfashion.remote.SharedPrefManager
 import com.example.thriftlyfashion.ui.history.TransactionHistoryActivity
 import com.example.thriftlyfashion.ui.payment.AddPaymentMethodActivity
 import com.example.thriftlyfashion.ui.help.HelpCenterActivity
@@ -21,12 +20,16 @@ import com.example.thriftlyfashion.ui.policy.PrivacyPolicyActivity
 import com.example.thriftlyfashion.ui.shopowner.ShopOwnerActivity
 
 class ProfileFragment : Fragment() {
+    private lateinit var usernameTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
+
+        usernameTextView = view.findViewById(R.id.username)
+        updateUsername()
 
         val riwayatTransaksiCard: CardView = view.findViewById(R.id.id_riwayatTransaksi)
         val addMethodPayCard: CardView = view.findViewById(R.id.id_addMethodPay)
@@ -72,10 +75,16 @@ class ProfileFragment : Fragment() {
         return view
     }
 
-    private fun onLogoutClicked() {
-        UserSession.clearSession()
+    private fun updateUsername() {
+        val sharedPrefManager = SharedPrefManager(requireContext())
+        val userName = sharedPrefManager.getUserName()
 
-        Toast.makeText(requireContext(), "Anda berhasil logout", Toast.LENGTH_SHORT).show()
+        usernameTextView.text = userName ?: "Pengguna"
+    }
+
+    private fun onLogoutClicked() {
+        val sharedPrefManager = SharedPrefManager(requireContext())
+        sharedPrefManager.clearAll()
 
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

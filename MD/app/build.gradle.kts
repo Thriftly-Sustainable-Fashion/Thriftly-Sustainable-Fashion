@@ -50,7 +50,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-//    implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.cronet.embedded)
     implementation(libs.androidx.activity)
@@ -68,4 +67,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.kotlin.reflect)
     implementation(libs.google.material.v161)
+    implementation(libs.javafaker)
 }

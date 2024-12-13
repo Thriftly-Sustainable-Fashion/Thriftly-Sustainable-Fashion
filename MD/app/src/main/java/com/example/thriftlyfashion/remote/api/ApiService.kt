@@ -29,18 +29,14 @@ interface ApiService {
     suspend fun getProductDetail(@Path("id") productId: Int): Response<Product>
 
 
-    // Create Product
     @POST("/api/products")
     fun createProduct(@Body productData: Product): Call<ApiResponse>
 
-    // Update Product
     @PUT("/api/products/{id}")
     fun updateProduct(@Path("id") productId: Int, @Body productData: Product): Call<ApiResponse>
 
-    // Delete Product
     @DELETE("/api/products/{id}")
     fun deleteProduct(@Path("id") productId: Int): Call<ApiResponse>
-
 
 
     @POST("/api/cart")
@@ -53,7 +49,6 @@ interface ApiService {
     fun deleteCartItem(@Path("itemId") itemId: Int): Call<Map<String, String>>
 
 
-    // Place Order
     @POST("order")
     fun placeOrder(@Body orderData: OrderData): Call<ApiResponse>
 }

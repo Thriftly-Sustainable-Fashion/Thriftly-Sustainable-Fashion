@@ -116,6 +116,28 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp"
+                app:cardBackgroundColor="#00FFFFFF"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp">
+
+                <EditText
+                    android:id="@+id/etNumberPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:background="@color/full_white"
+                    android:fontFamily="@font/poppins_light"
+                    android:hint="@string/label_phone_number"
+                    android:inputType="number"
+                    android:padding="11dp"
+                    android:textSize="16sp"
+                    tools:ignore="TextFields" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 app:cardBackgroundColor="#00FFFFFF"
                 app:cardCornerRadius="8dp"
@@ -144,7 +166,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="16dp"
-                        android:contentDescription="TODO"
+                        android:contentDescription="@string/CD_ic_visibility"
                         android:src="@drawable/baseline_visibility_24" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>

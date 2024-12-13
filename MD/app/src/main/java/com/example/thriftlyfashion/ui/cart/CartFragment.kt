@@ -38,7 +38,7 @@ class CartFragment : Fragment() {
     private lateinit var emptyCartTextView: LinearLayout
     private lateinit var cartView: LinearLayout
     private var cartItems: List<CartItem> = emptyList()
-    val apiService = RetrofitClient.createService(ApiService::class.java)
+    private val apiService = RetrofitClient.createService(ApiService::class.java)
     private lateinit var checkoutButton: Button
 
 
@@ -68,41 +68,46 @@ class CartFragment : Fragment() {
 
         apiService.getCartItems(userId).enqueue(object : Callback<List<CartItem>> {
             override fun onResponse(call: Call<List<CartItem>>, response: Response<List<CartItem>>) {
-                if (response.isSuccessful) {
-                    cartItems = response.body() ?: emptyList()
+                if (isAdded) {
+                    if (response.isSuccessful) {
+                        cartItems = response.body() ?: emptyList()
 
-                    if (cartItems.isEmpty()) {
-                        updateCartVisibility(cartItems)
-                    } else {
-                        productCartAdapter = ProductCartAdapter(
-                            requireContext(),
-                            cartItems,
-                            onDeleteClickListener = { id, position ->
-                                deleteCartItem(id, position, cartItems)
-                            },
-                            onCheckBoxClickListener = { productId, totalPrice, isChecked ->
-                                if (isChecked) {
-                                    selectedProducts.add(Pair(productId.toString(), totalPrice))
-                                } else {
-                                    selectedProducts.removeIf { it.first == productId.toString() }
+                        if (cartItems.isEmpty()) {
+                            updateCartVisibility(cartItems)
+                        } else {
+                            productCartAdapter = ProductCartAdapter(
+                                requireContext(),
+                                cartItems,
+                                onDeleteClickListener = { id, position ->
+                                    deleteCartItem(id, position, cartItems)
+                                },
+                                onCheckBoxClickListener = { productId, totalPrice, isChecked ->
+                                    if (isChecked) {
+                                        selectedProducts.add(Pair(productId.toString(), totalPrice))
+                                    } else {
+                                        selectedProducts.removeIf { it.first == productId.toString() }
+                                    }
+                                    calculateTotals()
                                 }
-                                calculateTotals()
-                            }
-                        )
-                        recyclerView.adapter = productCartAdapter
-                        updateCartVisibility(cartItems)
-                        calculateTotals()
+                            )
+                            recyclerView.adapter = productCartAdapter
+                            updateCartVisibility(cartItems)
+                            calculateTotals()
+                        }
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("CartFragment", "API error: ${response.code()}, $errorBody")
                     }
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("CartFragment", "API error: ${response.code()}, $errorBody")
                 }
             }
 
             override fun onFailure(call: Call<List<CartItem>>, t: Throwable) {
-                Log.e("CartFragment", "API call failed", t)
+                if (isAdded) {
+                    Log.e("CartFragment", "API call failed", t)
+                }
             }
         })
+
 
         checkoutButton.setOnClickListener {
             performCheckout()

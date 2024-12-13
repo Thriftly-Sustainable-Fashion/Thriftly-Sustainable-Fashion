@@ -6,8 +6,7 @@
     android:layout_marginEnd="10dp"
     android:foregroundGravity="center"
     app:cardCornerRadius="50dp"
-    app:cardElevation="1dp"
-    app:contentPadding="10dp">
+    app:cardElevation="1dp">
 
     <ImageView
         android:id="@+id/product_image"

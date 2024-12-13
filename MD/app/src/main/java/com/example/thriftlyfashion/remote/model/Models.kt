@@ -4,50 +4,55 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import com.google.gson.annotations.SerializedName
 
-// User Data Model
+//@Parcelize
+//data class UserData(
+//    val name: String,
+//    val email: String,
+//    val password: String,
+//    val phone_number: String,
+//    val isOwner: Boolean
+//) : Parcelable
+
 @Parcelize
-data class UserData(
-    val name: String,
-    val email: String,
-    val password: String,
-    val phone_number: String,
-    val isOwner: Boolean
+data class User(
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("name") val name: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("phone_number") val phoneNumber: String,
+    @SerializedName("created_at") val createdAt: String,
+    @SerializedName("store_name") val storeName: String?,
+    @SerializedName("store_description") val storeDescription: String?,
+    @SerializedName("store_address") val storeAddress: String?,
+    @SerializedName("store_created_at") val storeCreatedAt: String?
 ) : Parcelable
 
 @Parcelize
 data class LoginRequest(
-    val email: String,
-    val password: String
+    @SerializedName("email") val email: String,
+    @SerializedName("password") val password: String
 ) : Parcelable
 
 @Parcelize
 data class LoginResponse(
-    val message: String,
-    val token: String,
-    val userId: Int
+    @SerializedName("message") val message: String,
+    @SerializedName("token") val token: String?,
+    @SerializedName("user") val user: User?
 ) : Parcelable
 
 @Parcelize
 data class SignupRequest(
-    val name: String,
-    val email: String,
-    val password: String,
-    val isOwner: Boolean
+    @SerializedName("name") val name: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("password") val password: String,
+    @SerializedName("numberPhone") val numberPhone: String
 ) : Parcelable
 
 @Parcelize
 data class SignupResponse(
-    val message: String,
-    val userId: Int
+    @SerializedName("message") val message: String,
+    @SerializedName("userId") val userId: Int
 ) : Parcelable
 
-@Parcelize
-data class User(
-    val id: Int,
-    val name: String,
-    val email: String,
-    val isOwner: Boolean
-) : Parcelable
 
 // Generic API Response
 @Parcelize

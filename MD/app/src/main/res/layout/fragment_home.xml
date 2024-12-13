@@ -130,8 +130,6 @@
                 android:layout_marginTop="40dp"
                 android:backgroundTint="@color/full_white"
                 app:contentPaddingBottom="100dp"
-                app:contentPaddingLeft="10dp"
-                app:contentPaddingRight="5dp"
                 app:contentPaddingTop="30dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/frameLayout"
@@ -170,20 +168,14 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <androidx.core.widget.NestedScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/id_productList"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:nestedScrollingEnabled="false"
-                            app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-                            app:layout_constraintTop_toBottomOf="@id/shopRecyclerView" />
-                    </androidx.core.widget.NestedScrollView>
-
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/id_productList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                        app:layout_constraintTop_toBottomOf="@id/shopRecyclerView" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.constraintlayout.widget.ConstraintLayout>

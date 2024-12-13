@@ -4,20 +4,14 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.thriftlyfashion.model.Product
 import com.example.thriftlyfashion.model.CartItem
-import com.example.thriftlyfashion.model.Category
-import com.example.thriftlyfashion.model.Subcategory
-import com.example.thriftlyfashion.model.User
+import com.example.thriftlyfashion.model.Product
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(Product.CREATE_TABLE)
         db.execSQL(CartItem.CREATE_TABLE)
-        db.execSQL(Category.CREATE_TABLE)
-        db.execSQL(Subcategory.CREATE_TABLE)
-        db.execSQL(User.CREATE_TABLE)
 //        db.execSQL(Order.CREATE_TABLE)
 //        db.execSQL(OrderDetail.CREATE_TABLE)
     }
@@ -26,14 +20,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 //        db.execSQL("DROP TABLE IF EXISTS order_details")
 //        db.execSQL("DROP TABLE IF EXISTS orders")
         db.execSQL("DROP TABLE IF EXISTS products")
-        db.execSQL("DROP TABLE IF EXISTS users")
         db.execSQL("DROP TABLE IF EXISTS cart")
-        db.execSQL("DROP TABLE IF EXISTS categories")
-        db.execSQL("DROP TABLE IF EXISTS subcategories")
         onCreate(db)
     }
 
-    // CRUD product
     fun insertProduct(
         productId: String,
         storeId: Int,
@@ -95,7 +85,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return productList
     }
 
-    // CRUD cart
     fun insertIntoCart(
         productId: String,
         image: String,
@@ -156,43 +145,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put("total_price", totalPrice)
         }
         return db.update("cart", values, "id = ?", arrayOf(id.toString()))
-    }
-
-
-    // CRUD account
-    fun insertUserAccount(name: String, email: String, password: String, isOwner: Boolean): Long {
-        val db = this.writableDatabase
-        val values = ContentValues().apply {
-            put("name", name)
-            put("email", email)
-            put("password", password)
-            put("isOwner", if (isOwner) 1 else 0)
-        }
-        val result = db.insert("User", null, values)
-        db.close()
-        return result
-    }
-
-    fun getUserByEmail(email: String): User? {
-        val db = this.readableDatabase
-        val cursor = db.query(
-            "User", null, "email = ?", arrayOf(email), null, null, null
-        )
-        if (cursor.moveToFirst()) {
-            val user = User(
-                id = cursor.getInt(cursor.getColumnIndexOrThrow("id")),
-                name = cursor.getString(cursor.getColumnIndexOrThrow("name")),
-                email = cursor.getString(cursor.getColumnIndexOrThrow("email")),
-                password = cursor.getString(cursor.getColumnIndexOrThrow("password")),
-                isOwner = cursor.getInt(cursor.getColumnIndexOrThrow("isOwner")) == 0
-            )
-            cursor.close()
-            db.close()
-            return user
-        }
-        cursor.close()
-        db.close()
-        return null
     }
 
     companion object {
