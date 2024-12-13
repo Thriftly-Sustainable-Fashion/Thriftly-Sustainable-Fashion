@@ -1,13 +1,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Night Mode theme -->
     <style name="Base.Theme.ThriftlyFashion" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorSecondary">@color/primary2</item>
+        <item name="colorPrimary">@color/primary3</item>
+        <item name="colorSecondary">@color/grey</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="android:colorBackground">@color/black</item>
+        <item name="colorSurface">@color/black</item>
+        <item name="colorOnSurface">@color/full_white</item>
 
     </style>
 
-    <style name="Theme.ThriftlyFashion" parent="Base.Theme.ThriftlyFashion" >
-
+    <style name="Theme.ThriftlyFashion" parent="Base.Theme.ThriftlyFashion">
+        <!-- Additional customizations for the dark theme -->
     </style>
 </resources>

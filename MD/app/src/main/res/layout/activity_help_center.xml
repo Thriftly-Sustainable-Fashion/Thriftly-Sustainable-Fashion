@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/primary2"
     tools:context=".ui.help.HelpCenterActivity">
 
     <LinearLayout
         android:id="@+id/id_header"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:elevation="4dp"
         android:orientation="horizontal"
         android:padding="20dp">

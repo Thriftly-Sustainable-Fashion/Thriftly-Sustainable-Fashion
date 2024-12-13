@@ -9,7 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.thriftlyfashion.R
-import com.example.thriftlyfashion.ui.MainActivity
+import com.example.thriftlyfashion.ui.AddProductOwner.AddProductActivity
 
 class SignupOwnerActivity : AppCompatActivity() {
 
@@ -36,22 +36,10 @@ class SignupOwnerActivity : AppCompatActivity() {
         }
 
         signupButton.setOnClickListener {
-//            if (validateInputs()) {
-//                val request = SignupRequest(
-//                    storeName = storeName.text.toString(),
-//                    storeOwner = storeOwner.text.toString(),
-//                    numberBusiness = numberBusiness.text.toString(),
-//                    businessEmail = businessEmail.text.toString()
-//                )
-//
-//                signUpToApi(request)
-//            }
-            val intent = Intent(this@SignupOwnerActivity, MainActivity::class.java)
+            val intent = Intent(this@SignupOwnerActivity, AddProductActivity::class.java)
             startActivity(intent)
-
             finish()
         }
-
 
         businessEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -95,27 +83,4 @@ class SignupOwnerActivity : AppCompatActivity() {
     private fun isValidEmail(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
-
-//    private fun signUpToApi(request: SignupRequest) {
-//        val api = RetrofitClient.instance
-//
-//        api.signUp(request).enqueue(object : Callback<SignupResponse> {
-//            override fun onResponse(call: Call<SignupResponse>, response: Response<SignupResponse>) {
-//                if (response.isSuccessful && response.body()?.success == true) {
-//                    Toast.makeText(this@SignupOwnerActivity, "Sign up berhasil!", Toast.LENGTH_SHORT).show()
-//                    val intent = Intent(this@SignupOwnerActivity, MainActivity::class.java)
-    //                startActivity(intent)
-    //
-    //                finish()
-//                } else {
-//                    Toast.makeText(this@SignupOwnerActivity, response.body()?.message ?: "Sign up gagal!", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<SignupResponse>, t: Throwable) {
-//                Toast.makeText(this@SignupOwnerActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-//    }
-
 }
