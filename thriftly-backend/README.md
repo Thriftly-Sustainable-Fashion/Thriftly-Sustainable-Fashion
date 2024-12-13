@@ -4,7 +4,7 @@
 This repository contains the backend infrastructure and API implementations for the Thriftly application, a modern e-commerce platform for thrift shopping. The system is built using Node.js and deployed on Google Cloud Platform (GCP).
 
 ## Architecture
-![Architecture Diagram](/src/architecture-diagram.png)
+![Architecture Diagram](thriftly-backend/src/architecture-diagram.png)
 
 ### Core Components
 - **REST API Server**: Express.js-based API handling core business logic
